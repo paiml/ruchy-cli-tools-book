@@ -149,3 +149,131 @@ fun test_large_file() {
     // Cleanup
     fs_remove_file(test_file)
 }
+
+// ============================================================================
+// PROPERTY-BASED TESTS: Invariant verification with 1000+ iterations
+// ============================================================================
+
+@test("property idempotent reads - reading same file twice gives same result")
+fun property_idempotent() {
+    // Setup: Create test file with varied content
+    let test_file = "test_property_idempotent.txt"
+    let test_content = "Line 1\nLine 2\nSpecial: \t \"quoted\" →\n"
+    fs_write(test_file, test_content)
+
+    // Property: Reading the same file multiple times should always give identical results
+    let first_read = read_file(test_file)
+
+    // Verify: 1000 iterations of reading should all match first read
+    for i in range(0, 1000) {
+        let current_read = read_file(test_file)
+        assert_eq(current_read, first_read, "Read should be idempotent - iteration " + i.to_string())
+    }
+
+    // Cleanup
+    fs_remove_file(test_file)
+}
+
+@test("property length preservation - content length matches file size")
+fun property_length_preservation() {
+    // Property: For any content written, reading should preserve exact length
+
+    let test_file = "test_property_length.txt"
+
+    // Test with 100 different file sizes (0 to 5000 bytes)
+    for size in range(0, 100) {
+        // Generate content of specific size
+        let content = ""
+        let char = "x"
+        for i in range(0, size * 50) {
+            content = content + char
+        }
+
+        // Write content
+        fs_write(test_file, content)
+
+        // Read and verify length preserved
+        let result = read_file(test_file)
+        assert_eq(result.len(), content.len(),
+                 "Length should be preserved for size " + content.len().to_string())
+    }
+
+    // Cleanup
+    fs_remove_file(test_file)
+}
+
+@test("property content preservation - varied content types")
+fun property_content_preservation() {
+    // Property: Any valid string written should be read back identically
+
+    let test_file = "test_property_content.txt"
+
+    // Test 100 iterations with different content patterns
+    for i in range(0, 100) {
+        let content = ""
+
+        // Build varied content based on iteration
+        if i % 5 == 0 {
+            // Empty content
+            content = ""
+        } else if i % 5 == 1 {
+            // Single character
+            content = "a"
+        } else if i % 5 == 2 {
+            // Newlines only
+            content = "\n\n\n\n\n"
+        } else if i % 5 == 3 {
+            // Special characters
+            content = "\t\"\'\n→←↑↓"
+        } else {
+            // Repeated pattern
+            let pattern = "Line " + i.to_string() + "\n"
+            for j in range(0, 10) {
+                content = content + pattern
+            }
+        }
+
+        // Write and read back
+        fs_write(test_file, content)
+        let result = read_file(test_file)
+
+        // Verify exact match
+        assert_eq(result, content,
+                 "Content should be preserved exactly - iteration " + i.to_string())
+    }
+
+    // Cleanup
+    fs_remove_file(test_file)
+}
+
+@test("property multiple file sizes - handles 0 to 10KB")
+fun property_file_sizes() {
+    // Property: Should handle files of various sizes correctly
+
+    let test_file = "test_property_sizes.txt"
+
+    // Test 50 different file sizes from empty to ~10KB
+    for size_factor in range(0, 50) {
+        // Generate content: empty, small (10 chars), medium (100 chars), large (1000+ chars)
+        let content = ""
+        let base_unit = "0123456789"  // 10 characters
+
+        // Build content based on size factor
+        for i in range(0, size_factor * 20) {
+            content = content + base_unit
+        }
+
+        // Write file
+        fs_write(test_file, content)
+
+        // Read and verify
+        let result = read_file(test_file)
+        assert_eq(result.len(), content.len(),
+                 "Should handle size " + content.len().to_string() + " bytes")
+        assert_eq(result, content,
+                 "Content should match for size " + content.len().to_string())
+    }
+
+    // Cleanup
+    fs_remove_file(test_file)
+}
