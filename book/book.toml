@@ -1,0 +1,28 @@
+[book]
+authors = ["Noah Gift"]
+language = "en"
+multilingual = false
+src = "src"
+title = "Ruchy CLI Tools: Building Command-Line Applications with Extreme TDD"
+description = "Learn to build production-quality CLI tools using the Ruchy programming language with EXTREME TDD practices inspired by the Toyota Way"
+
+[build]
+build-dir = "book"
+create-missing = true
+
+[preprocessor.linkcheck]
+
+[output.html]
+default-theme = "rust"
+preferred-dark-theme = "navy"
+git-repository-url = "https://github.com/paiml/ruchy-cli-tools-book"
+edit-url-template = "https://github.com/paiml/ruchy-cli-tools-book/edit/main/book/{path}"
+
+[output.html.fold]
+enable = true
+level = 1
+
+[output.html.playground]
+editable = true
+copyable = true
+line-numbers = true

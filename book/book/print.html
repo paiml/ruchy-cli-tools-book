@@ -1,0 +1,765 @@
+<!DOCTYPE HTML>
+<html lang="en" class="rust sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Ruchy CLI Tools: Building Command-Line Applications with Extreme TDD</title>
+        <meta name="robots" content="noindex">
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Learn to build production-quality CLI tools using the Ruchy programming language with EXTREME TDD practices inspired by the Toyota Way">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "rust";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Ruchy CLI Tools: Building Command-Line Applications with Extreme TDD</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/paiml/ruchy-cli-tools-book" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="introduction"><a class="header" href="#introduction">Introduction</a></h1>
+<p>Welcome to <strong>Ruchy CLI Tools: Building Command-Line Applications with Extreme TDD</strong>!</p>
+<h2 id="what-this-book-is-about"><a class="header" href="#what-this-book-is-about">What This Book Is About</a></h2>
+<p>This book teaches you how to build production-quality command-line interface (CLI) tools using the <strong>Ruchy programming language</strong> while practicing <strong>EXTREME Test-Driven Development</strong> (TDD) inspired by the Toyota Way manufacturing principles.</p>
+<p>You'll learn by doing—recreating 10 classic Unix tools:</p>
+<ol>
+<li><strong>ruchy-cat</strong> - Concatenate and print files</li>
+<li><strong>ruchy-grep</strong> - Search for patterns in text</li>
+<li><strong>ruchy-wc</strong> - Count lines, words, and bytes</li>
+<li><strong>ruchy-cut</strong> - Extract fields from lines</li>
+<li><strong>ruchy-sort</strong> - Sort lines of text</li>
+<li><strong>ruchy-uniq</strong> - Remove duplicate lines</li>
+<li><strong>ruchy-sed</strong> - Stream editor for transforming text</li>
+<li><strong>ruchy-head</strong> - Output first part of files</li>
+<li><strong>ruchy-tail</strong> - Output last part of files</li>
+<li><strong>ruchy-jq</strong> - JSON query and manipulation</li>
+</ol>
+<h2 id="what-makes-this-book-different"><a class="header" href="#what-makes-this-book-different">What Makes This Book Different?</a></h2>
+<h3 id="1-extreme-tdd-not-just-tdd"><a class="header" href="#1-extreme-tdd-not-just-tdd">1. EXTREME TDD (Not Just TDD)</a></h3>
+<p>We don't just write tests—we practice <strong>EXTREME TDD</strong> with:</p>
+<ul>
+<li><strong>RED</strong>: Write failing test FIRST (always)</li>
+<li><strong>GREEN</strong>: Minimal code to pass (may be ugly)</li>
+<li><strong>REFACTOR</strong>: Improve while keeping tests green</li>
+<li><strong>MUTATION</strong>: Verify test quality (75%+ mutation score required)</li>
+<li><strong>PROPERTY</strong>: Test invariants (1000+ iterations per property)</li>
+<li><strong>QUALIFY</strong>: Pass all 15 Ruchy tools (100% compliance)</li>
+</ul>
+<h3 id="2-toyota-way-quality-culture"><a class="header" href="#2-toyota-way-quality-culture">2. Toyota Way Quality Culture</a></h3>
+<p>Inspired by Toyota's manufacturing excellence, we apply:</p>
+<ul>
+<li><strong>Jidoka (Autonomation)</strong>: Stop the line when defects are detected</li>
+<li><strong>Genchi Genbutsu (Go and See)</strong>: Direct observation and verification</li>
+<li><strong>Kaizen (Continuous Improvement)</strong>: Always improving quality metrics</li>
+<li><strong>Respect for People</strong>: Quality documentation and proper bug reports</li>
+</ul>
+<h3 id="3-zero-defect-tolerance"><a class="header" href="#3-zero-defect-tolerance">3. Zero Defect Tolerance</a></h3>
+<p>Quality is <strong>built-in, not bolted-on</strong>:</p>
+<ul>
+<li>✅ 85%+ code coverage (minimum)</li>
+<li>✅ 75%+ mutation score (test quality)</li>
+<li>✅ Zero clippy warnings</li>
+<li>✅ Zero SATD markers (no TODO/FIXME/HACK)</li>
+<li>✅ All 15 Ruchy tools pass</li>
+<li>✅ Pre-commit hooks block bad code</li>
+<li>✅ CI/CD enforces all quality gates</li>
+</ul>
+<h3 id="4-dogfooding-ruchy"><a class="header" href="#4-dogfooding-ruchy">4. Dogfooding Ruchy</a></h3>
+<p>This book is <strong>dogfooding</strong> the Ruchy programming language—we're using Ruchy to showcase what it can do. As early adopters, we'll encounter language bugs and handle them professionally using our "Stop The Line" protocol.</p>
+<h2 id="who-this-book-is-for"><a class="header" href="#who-this-book-is-for">Who This Book Is For</a></h2>
+<p>This book is for developers who want to:</p>
+<ul>
+<li><strong>Learn Ruchy</strong> through practical, real-world examples</li>
+<li><strong>Master TDD</strong> at an industrial-strength level</li>
+<li><strong>Build CLI tools</strong> with production-quality standards</li>
+<li><strong>Understand quality culture</strong> from Toyota Way principles</li>
+<li><strong>Experience dogfooding</strong> a new programming language</li>
+</ul>
+<p>You should be comfortable with:</p>
+<ul>
+<li>Basic programming concepts (variables, functions, loops)</li>
+<li>Command-line usage (terminal, shell, pipes)</li>
+<li>Software testing fundamentals</li>
+<li>Git and version control</li>
+</ul>
+<p>No prior Ruchy experience required!</p>
+<h2 id="how-to-use-this-book"><a class="header" href="#how-to-use-this-book">How to Use This Book</a></h2>
+<h3 id="part-i-foundations-chapters-1-3"><a class="header" href="#part-i-foundations-chapters-1-3">Part I: Foundations (Chapters 1-3)</a></h3>
+<p>Start here if you're new to Ruchy or EXTREME TDD. Learn the tools, philosophy, and CLI development basics.</p>
+<h3 id="part-ii-building-unix-classics-chapters-1-10"><a class="header" href="#part-ii-building-unix-classics-chapters-1-10">Part II: Building Unix Classics (Chapters 1-10)</a></h3>
+<p>The core of the book. Each chapter builds one complete CLI tool from scratch using EXTREME TDD. Follow along in order, or jump to the tool that interests you most.</p>
+<h3 id="part-iii-advanced-topics-chapters-1-5"><a class="header" href="#part-iii-advanced-topics-chapters-1-5">Part III: Advanced Topics (Chapters 1-5)</a></h3>
+<p>Deep dives into testing strategies, mutation testing, property-based testing, quality gates, and performance optimization.</p>
+<h3 id="part-iv-the-toyota-way-chapters-1-4"><a class="header" href="#part-iv-the-toyota-way-chapters-1-4">Part IV: The Toyota Way (Chapters 1-4)</a></h3>
+<p>Learn how Toyota's manufacturing principles apply to software quality. Real-world lessons from dogfooding Ruchy.</p>
+<h3 id="appendices"><a class="header" href="#appendices">Appendices</a></h3>
+<p>Quick reference for Ruchy language, Unix tools, testing patterns, quality metrics, and troubleshooting.</p>
+<h2 id="code-examples"><a class="header" href="#code-examples">Code Examples</a></h2>
+<p>All code in this book is:</p>
+<ul>
+<li><strong>Tested</strong>: Every example has comprehensive tests</li>
+<li><strong>Verified</strong>: All code passes quality gates</li>
+<li><strong>Executable</strong>: You can run every example</li>
+<li><strong>Open Source</strong>: Available at <a href="https://github.com/paiml/ruchy-cli-tools-book">github.com/paiml/ruchy-cli-tools-book</a></li>
+</ul>
+<h2 id="conventions-used"><a class="header" href="#conventions-used">Conventions Used</a></h2>
+<h3 id="code-blocks"><a class="header" href="#code-blocks">Code Blocks</a></h3>
+<pre><code class="language-ruchy">// Ruchy code examples look like this
+fn main() {
+    println("Hello, Ruchy!")
+}
+</code></pre>
+<h3 id="annotations"><a class="header" href="#annotations">Annotations</a></h3>
+<pre><code class="language-ruchy">// RED: This test will fail initially
+@test("reads file")
+fun test_read_file() {
+    assert_eq(read_file("test.txt"), "expected content")
+}
+</code></pre>
+<h3 id="quality-notes"><a class="header" href="#quality-notes">Quality Notes</a></h3>
+<blockquote>
+<p><strong>QUALITY NOTE</strong>: Important quality-related information about testing, coverage, or Toyota Way principles.</p>
+</blockquote>
+<h3 id="stop-the-line"><a class="header" href="#stop-the-line">Stop The Line</a></h3>
+<blockquote>
+<p><strong>🛑 STOP THE LINE</strong>: Critical quality issues that require immediate attention, just like on a Toyota production line.</p>
+</blockquote>
+<h3 id="ruchy-version"><a class="header" href="#ruchy-version">Ruchy Version</a></h3>
+<p>This book uses <strong>Ruchy v3.78.0+</strong>. Some features may change as the language evolves.</p>
+<h2 id="getting-help"><a class="header" href="#getting-help">Getting Help</a></h2>
+<ul>
+<li><strong>Ruchy Documentation</strong>: <a href="https://ruchy-lang.org">ruchy-lang.org</a></li>
+<li><strong>Book Repository</strong>: <a href="https://github.com/paiml/ruchy-cli-tools-book">github.com/paiml/ruchy-cli-tools-book</a></li>
+<li><strong>Issues</strong>: Report problems via GitHub Issues</li>
+<li><strong>Discussions</strong>: Join the Ruchy community</li>
+</ul>
+<h2 id="a-note-on-quality"><a class="header" href="#a-note-on-quality">A Note on Quality</a></h2>
+<p>This book practices what it preaches. The entire book project:</p>
+<ul>
+<li>Follows EXTREME TDD methodology</li>
+<li>Enforces quality gates via pre-commit hooks</li>
+<li>Runs comprehensive CI/CD pipelines</li>
+<li>Documents "Stop The Line" events (like <a href="https://github.com/paiml/ruchy/issues/30">Ruchy bug #30</a>)</li>
+<li>Maintains 85%+ code coverage</li>
+<li>Achieves 75%+ mutation scores</li>
+</ul>
+<p>You're not just reading about quality—you're seeing it in action.</p>
+<h2 id="lets-begin"><a class="header" href="#lets-begin">Let's Begin!</a></h2>
+<p>Ready to build production-quality CLI tools with EXTREME TDD? Let's start with <a href="./part1/01_getting_started.html">Part I: Getting Started with Ruchy</a>.</p>
+<hr />
+<p><strong>Remember</strong>: Quality is built-in, not bolted-on. We stop the line when defects are detected. We verify directly through tests. We continuously improve. We respect the craft.</p>
+<p>Welcome to EXTREME TDD with Ruchy! 🚀</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="getting-started-with-ruchy"><a class="header" href="#getting-started-with-ruchy">Getting Started with Ruchy</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="installing-ruchy"><a class="header" href="#installing-ruchy">Installing Ruchy</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="your-first-ruchy-program"><a class="header" href="#your-first-ruchy-program">Your First Ruchy Program</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="the-15-ruchy-tools"><a class="header" href="#the-15-ruchy-tools">The 15 Ruchy Tools</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="extreme-tdd-philosophy"><a class="header" href="#extreme-tdd-philosophy">EXTREME TDD Philosophy</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="the-toyota-way"><a class="header" href="#the-toyota-way">The Toyota Way</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="red-green-refactor-cycle"><a class="header" href="#red-green-refactor-cycle">RED-GREEN-REFACTOR Cycle</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="mutation-testing"><a class="header" href="#mutation-testing">Mutation Testing</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="property-based-testing"><a class="header" href="#property-based-testing">Property-Based Testing</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="qualification-with-15-tools"><a class="header" href="#qualification-with-15-tools">Qualification with 15 Tools</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="cli-development-basics"><a class="header" href="#cli-development-basics">CLI Development Basics</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="argument-parsing"><a class="header" href="#argument-parsing">Argument Parsing</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="standard-inputoutput"><a class="header" href="#standard-inputoutput">Standard Input/Output</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="error-handling"><a class="header" href="#error-handling">Error Handling</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="exit-codes"><a class="header" href="#exit-codes">Exit Codes</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="chapter-1-ruchy-cat"><a class="header" href="#chapter-1-ruchy-cat">Chapter 1: ruchy-cat</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="understanding-cat"><a class="header" href="#understanding-cat">Understanding cat</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="red-first-test"><a class="header" href="#red-first-test">RED: First Test</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="green-minimal-implementation"><a class="header" href="#green-minimal-implementation">GREEN: Minimal Implementation</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="refactor-clean-code"><a class="header" href="#refactor-clean-code">REFACTOR: Clean Code</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="mutation-test-quality"><a class="header" href="#mutation-test-quality">MUTATION: Test Quality</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="property-invariants"><a class="header" href="#property-invariants">PROPERTY: Invariants</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="qualify-15-tools"><a class="header" href="#qualify-15-tools">QUALIFY: 15 Tools</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="chapter-2-ruchy-grep"><a class="header" href="#chapter-2-ruchy-grep">Chapter 2: ruchy-grep</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="pattern-matching-basics"><a class="header" href="#pattern-matching-basics">Pattern Matching Basics</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="regular-expressions-in-ruchy"><a class="header" href="#regular-expressions-in-ruchy">Regular Expressions in Ruchy</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="building-grep-with-tdd"><a class="header" href="#building-grep-with-tdd">Building grep with TDD</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="chapter-3-ruchy-wc"><a class="header" href="#chapter-3-ruchy-wc">Chapter 3: ruchy-wc</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="counting-lines-words-bytes"><a class="header" href="#counting-lines-words-bytes">Counting Lines, Words, Bytes</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="unicode-handling"><a class="header" href="#unicode-handling">Unicode Handling</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="performance-optimization"><a class="header" href="#performance-optimization">Performance Optimization</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="chapter-4-ruchy-cut"><a class="header" href="#chapter-4-ruchy-cut">Chapter 4: ruchy-cut</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="field-extraction"><a class="header" href="#field-extraction">Field Extraction</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="delimiter-handling"><a class="header" href="#delimiter-handling">Delimiter Handling</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="range-specifications"><a class="header" href="#range-specifications">Range Specifications</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="chapter-5-ruchy-sort"><a class="header" href="#chapter-5-ruchy-sort">Chapter 5: ruchy-sort</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="sorting-algorithms"><a class="header" href="#sorting-algorithms">Sorting Algorithms</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="numeric-vs-lexicographic"><a class="header" href="#numeric-vs-lexicographic">Numeric vs Lexicographic</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="stable-sorting"><a class="header" href="#stable-sorting">Stable Sorting</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="chapter-6-ruchy-uniq"><a class="header" href="#chapter-6-ruchy-uniq">Chapter 6: ruchy-uniq</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="deduplication-logic"><a class="header" href="#deduplication-logic">Deduplication Logic</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="counting-occurrences"><a class="header" href="#counting-occurrences">Counting Occurrences</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="case-sensitivity"><a class="header" href="#case-sensitivity">Case Sensitivity</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="chapter-7-ruchy-sed"><a class="header" href="#chapter-7-ruchy-sed">Chapter 7: ruchy-sed</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="stream-editing-basics"><a class="header" href="#stream-editing-basics">Stream Editing Basics</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="substitution-patterns"><a class="header" href="#substitution-patterns">Substitution Patterns</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="advanced-sed-features"><a class="header" href="#advanced-sed-features">Advanced sed Features</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="chapter-8-ruchy-head"><a class="header" href="#chapter-8-ruchy-head">Chapter 8: ruchy-head</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="reading-first-n-lines"><a class="header" href="#reading-first-n-lines">Reading First N Lines</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="byte-based-reading"><a class="header" href="#byte-based-reading">Byte-based Reading</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="multiple-file-handling"><a class="header" href="#multiple-file-handling">Multiple File Handling</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="chapter-9-ruchy-tail"><a class="header" href="#chapter-9-ruchy-tail">Chapter 9: ruchy-tail</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="reading-last-n-lines"><a class="header" href="#reading-last-n-lines">Reading Last N Lines</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="follow-mode--f"><a class="header" href="#follow-mode--f">Follow Mode (-f)</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="efficient-algorithms"><a class="header" href="#efficient-algorithms">Efficient Algorithms</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="chapter-10-ruchy-jq"><a class="header" href="#chapter-10-ruchy-jq">Chapter 10: ruchy-jq</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="json-parsing"><a class="header" href="#json-parsing">JSON Parsing</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="query-language"><a class="header" href="#query-language">Query Language</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="transformations"><a class="header" href="#transformations">Transformations</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="testing-strategies"><a class="header" href="#testing-strategies">Testing Strategies</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="unit-testing"><a class="header" href="#unit-testing">Unit Testing</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="integration-testing"><a class="header" href="#integration-testing">Integration Testing</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="cli-testing-with-assert_cmd"><a class="header" href="#cli-testing-with-assert_cmd">CLI Testing with assert_cmd</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="interactive-testing-with-rexpect"><a class="header" href="#interactive-testing-with-rexpect">Interactive Testing with rexpect</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="mutation-testing-deep-dive"><a class="header" href="#mutation-testing-deep-dive">Mutation Testing Deep Dive</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="what-is-mutation-testing"><a class="header" href="#what-is-mutation-testing">What is Mutation Testing?</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="interpreting-mutation-scores"><a class="header" href="#interpreting-mutation-scores">Interpreting Mutation Scores</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="improving-test-quality"><a class="header" href="#improving-test-quality">Improving Test Quality</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="property-based-testing-1"><a class="header" href="#property-based-testing-1">Property-Based Testing</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="defining-properties"><a class="header" href="#defining-properties">Defining Properties</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="generators-and-shrinking"><a class="header" href="#generators-and-shrinking">Generators and Shrinking</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="common-patterns"><a class="header" href="#common-patterns">Common Patterns</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="quality-gates"><a class="header" href="#quality-gates">Quality Gates</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="pre-commit-hooks"><a class="header" href="#pre-commit-hooks">Pre-commit Hooks</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="cicd-pipeline"><a class="header" href="#cicd-pipeline">CI/CD Pipeline</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="coverage-requirements"><a class="header" href="#coverage-requirements">Coverage Requirements</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="zero-satd-policy"><a class="header" href="#zero-satd-policy">Zero SATD Policy</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="performance--optimization"><a class="header" href="#performance--optimization">Performance &amp; Optimization</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="profiling-cli-tools"><a class="header" href="#profiling-cli-tools">Profiling CLI Tools</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="memory-management"><a class="header" href="#memory-management">Memory Management</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="io-optimization"><a class="header" href="#io-optimization">I/O Optimization</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="jidoka-stop-the-line"><a class="header" href="#jidoka-stop-the-line">Jidoka: Stop The Line</a></h1>
+<p><strong>Jidoka</strong> (自働化) is a Japanese term meaning "autonomation"—automation with human intelligence. In Toyota manufacturing, it means machines automatically stop when a defect is detected, and workers are <strong>empowered and required</strong> to stop the entire production line if they find a quality issue.</p>
+<p>In software development, we apply Jidoka by stopping all work immediately when we encounter a fundamental defect—especially bugs in the language or toolchain itself.</p>
+<h2 id="the-philosophy"><a class="header" href="#the-philosophy">The Philosophy</a></h2>
+<blockquote>
+<p>"We place the highest value on actual implementation and taking action. There are many things one doesn't understand and therefore, we ask them why don't you just go ahead and take action; try to do something? You realize how little you know and you face your own failures and you simply can correct those failures and redo it again and at the second trial you realize another mistake or another thing you didn't like so you can redo it once again. So by constant improvement, or, should I say, the improvement based upon action, one can rise to the higher level of practice and knowledge."
+— Fujio Cho, Toyota Motor Corporation</p>
+</blockquote>
+<h3 id="key-principles"><a class="header" href="#key-principles">Key Principles</a></h3>
+<ol>
+<li><strong>Quality at the Source</strong>: Build quality in, don't bolt it on</li>
+<li><strong>Stop When Problems Occur</strong>: Don't pass defects downstream</li>
+<li><strong>Fix Problems Immediately</strong>: Address root cause, not symptoms</li>
+<li><strong>Respect for People</strong>: Help others by reporting issues properly</li>
+</ol>
+<h2 id="real-world-example-ruchy-bug-30"><a class="header" href="#real-world-example-ruchy-bug-30">Real-World Example: Ruchy Bug #30</a></h2>
+<p>On 2025-10-14, during Sprint 1 of this very book project, we encountered a perfect example of when to "Stop The Line."</p>
+<h3 id="the-situation"><a class="header" href="#the-situation">The Situation</a></h3>
+<p><strong>Task</strong>: S1T1 - RED phase for ruchy-cat (write failing test for file reading)</p>
+<p><strong>Discovery</strong>: The <code>::</code> (ColonColon) operator was rejected by <code>ruchy check</code> as a syntax error:</p>
+<pre><code class="language-bash">$ ruchy check cat_test.ruchy
+✗ Syntax error: Unexpected token: ColonColon
+Error: Syntax error: Unexpected token: ColonColon
+</code></pre>
+<h3 id="the-conflict"><a class="header" href="#the-conflict">The Conflict</a></h3>
+<p>The official Ruchy example files (like <code>examples/11_file_io.ruchy</code>) use <code>::</code> syntax extensively:</p>
+<pre><code class="language-ruchy">import std::fs
+
+fn main() {
+    let content = fs::read_to_string("test.txt")?
+    fs::write("output.txt", content)?
+    // ... etc
+}
+</code></pre>
+<p>But <code>ruchy check</code> rejects this as invalid syntax!</p>
+<p>Even worse—the official example file itself fails:</p>
+<pre><code class="language-bash">$ ruchy check /path/to/ruchy/examples/11_file_io.ruchy
+✗ Syntax error: Unexpected token: ColonColon
+</code></pre>
+<h3 id="the-decision--stop-the-line"><a class="header" href="#the-decision--stop-the-line">The Decision: 🛑 STOP THE LINE</a></h3>
+<p>Following the Jidoka principle, <strong>all development was immediately halted</strong>.</p>
+<p>This wasn't a bug in our code—it was a bug in the Ruchy language itself. File I/O operations (fundamental to CLI tools) require the <code>::</code> operator which the syntax checker rejects.</p>
+<p><strong>Severity</strong>: <strong>BLOCKING</strong> - Cannot proceed with any file I/O operations.</p>
+<h2 id="the-6-step-protocol"><a class="header" href="#the-6-step-protocol">The 6-Step Protocol</a></h2>
+<p>When a language bug is discovered, we follow this mandatory protocol:</p>
+<h3 id="1--stop-the-line"><a class="header" href="#1--stop-the-line">1. 🛑 STOP THE LINE</a></h3>
+<p><strong>Immediately halt all work on the current task.</strong></p>
+<pre><code class="language-bash"># Document the stop
+echo "STOPPED: Ruchy language bug found in ruchy check" &gt;&gt; .stop-the-line.log
+echo "Date: $(date)" &gt;&gt; .stop-the-line.log
+echo "Component: ruchy check (syntax validation)" &gt;&gt; .stop-the-line.log
+echo "Severity: blocking" &gt;&gt; .stop-the-line.log
+</code></pre>
+<p><strong>Do NOT</strong>:</p>
+<ul>
+<li>❌ Continue working around the bug silently</li>
+<li>❌ Assume it's our code error without verification</li>
+<li>❌ Try multiple workarounds without documenting</li>
+</ul>
+<h3 id="2--reproduce"><a class="header" href="#2--reproduce">2. 🔍 REPRODUCE</a></h3>
+<p>Create a <strong>minimal reproducible example</strong> (&lt; 20 lines).</p>
+<p><strong>Good Example</strong> (<code>bug_colons.ruchy</code>):</p>
+<pre><code class="language-ruchy">// Minimal reproducible example for Ruchy bug
+// Demonstrates ColonColon syntax error
+
+import std::fs
+
+fn main() {
+    let content = "test"
+    fs::write("test.txt", content)?
+}
+</code></pre>
+<p>This is 9 lines and clearly demonstrates the issue.</p>
+<p><strong>Bad Example</strong>:</p>
+<pre><code class="language-ruchy">// Don't include 100 lines of our cat implementation
+// Don't include unrelated code
+// Keep it MINIMAL
+</code></pre>
+<h3 id="3--document"><a class="header" href="#3--document">3. 📝 DOCUMENT</a></h3>
+<p>Write a detailed bug report using the template from <code>BUG_PROTOCOL.md</code>.</p>
+<p>Key sections:</p>
+<ul>
+<li><strong>Component</strong>: What part of the language/toolchain</li>
+<li><strong>Severity</strong>: blocking / high / medium / low</li>
+<li><strong>Minimal Example</strong>: Your &lt; 20 line reproduction</li>
+<li><strong>Expected Behavior</strong>: What SHOULD happen (with references)</li>
+<li><strong>Actual Behavior</strong>: What actually happens (exact error messages)</li>
+<li><strong>Steps to Reproduce</strong>: 1, 2, 3...</li>
+<li><strong>Environment</strong>: OS, versions, installation method</li>
+<li><strong>Workaround</strong>: Alternative approaches (if any)</li>
+<li><strong>Impact</strong>: How this blocks your project</li>
+</ul>
+<p>For Ruchy bug #30, we created <code>RUCHY_BUG_COLONCOLON.md</code> with all details.</p>
+<h3 id="4--file-issue"><a class="header" href="#4--file-issue">4. 🐛 FILE ISSUE</a></h3>
+<p>Submit the bug report to the upstream repository.</p>
+<p>For Ruchy bugs:</p>
+<ul>
+<li><strong>Repository</strong>: https://github.com/paiml/ruchy</li>
+<li><strong>Method</strong>: Use <code>gh</code> CLI or web interface</li>
+</ul>
+<pre><code class="language-bash">cd /path/to/ruchy
+gh issue create --repo paiml/ruchy \
+  --title "Syntax Error: ColonColon (::) operator rejected" \
+  --body-file ../ruchy-cli-tools-book/RUCHY_BUG_COLONCOLON.md
+</code></pre>
+<p><strong>Result</strong>: Issue #30 created at https://github.com/paiml/ruchy/issues/30</p>
+<h3 id="5--workaround"><a class="header" href="#5--workaround">5. 🔧 WORKAROUND</a></h3>
+<p>Document any temporary solution that unblocks development.</p>
+<p><strong>For Ruchy bug #30</strong>: No workaround found yet.</p>
+<p>File I/O operations fundamentally require the <code>::</code> operator which is not currently supported.</p>
+<p>If a workaround exists:</p>
+<pre><code class="language-ruchy">// WORKAROUND for Ruchy bug #30
+// Issue: https://github.com/paiml/ruchy/issues/30
+// The :: operator isn't supported yet
+// Using alternative syntax: ...
+
+fun workaround_read_file(path) {
+    // Alternative implementation
+}
+</code></pre>
+<h3 id="6--track"><a class="header" href="#6--track">6. 📊 TRACK</a></h3>
+<p>Update <code>roadmap.yaml</code> with bug tracking metadata:</p>
+<pre><code class="language-yaml">- id: S1T1
+  title: "RED: Test reading single file"
+  status: blocked
+  blocked_by:
+    type: ruchy_language_bug
+    issue_number: 30
+    issue_url: "https://github.com/paiml/ruchy/issues/30"
+    component: "ruchy check - ColonColon (::) syntax"
+    severity: blocking
+    workaround: "None found - :: required for file I/O"
+    date_filed: "2025-10-14"
+    date_resolved: null
+    notes: |
+      Cannot proceed with file I/O until bug is fixed.
+      Options: 1) Wait for fix, 2) Work on non-file-I/O tools,
+      3) Focus on infrastructure tasks
+</code></pre>
+<h2 id="after-filing-the-bug"><a class="header" href="#after-filing-the-bug">After Filing The Bug</a></h2>
+<h3 id="continue-development-strategy"><a class="header" href="#continue-development-strategy">Continue Development Strategy</a></h3>
+<p>The severity determines your path forward:</p>
+<div class="table-wrapper"><table><thead><tr><th>Severity</th><th>Action</th><th>Example</th></tr></thead><tbody>
+<tr><td><strong>blocking</strong></td><td>Work on different chapter/tool</td><td>Our case: focus on infrastructure</td></tr>
+<tr><td><strong>high</strong></td><td>Use workaround, continue cautiously</td><td>Document workaround in code</td></tr>
+<tr><td><strong>medium</strong></td><td>Minor inconvenience</td><td>Document, continue normally</td></tr>
+<tr><td><strong>low</strong></td><td>Nice to have fix</td><td>Note for future improvement</td></tr>
+</tbody></table>
+</div>
+<h3 id="for-ruchy-bug-30"><a class="header" href="#for-ruchy-bug-30">For Ruchy Bug #30</a></h3>
+<p>We chose <strong>Option 4: Focus on Infrastructure</strong> while waiting:</p>
+<p>✅ Completed tasks:</p>
+<ul>
+<li>Configure GitHub Actions (S0T4)</li>
+<li>Setup mdBook structure (S0T5)</li>
+<li>Improve documentation</li>
+<li>Document the Stop The Line process (this chapter!)</li>
+</ul>
+<p>❌ Blocked tasks:</p>
+<ul>
+<li>All file I/O operations</li>
+<li>Sprint 1: ruchy-cat</li>
+<li>Most CLI tools (require file I/O)</li>
+</ul>
+<h3 id="monitoring-bug-status"><a class="header" href="#monitoring-bug-status">Monitoring Bug Status</a></h3>
+<p>Check regularly for updates:</p>
+<pre><code class="language-bash"># View issue status
+gh issue view 30 --repo paiml/ruchy
+
+# Or visit URL
+open https://github.com/paiml/ruchy/issues/30
+</code></pre>
+<h3 id="when-bug-is-resolved"><a class="header" href="#when-bug-is-resolved">When Bug Is Resolved</a></h3>
+<ol>
+<li><strong>Update roadmap.yaml</strong>:</li>
+</ol>
+<pre><code class="language-yaml">blocked_by:
+  ...
+  date_resolved: "2025-10-XX"
+  resolved_in_version: "3.79.0"
+</code></pre>
+<ol start="2">
+<li><strong>Remove workarounds</strong>:</li>
+</ol>
+<pre><code class="language-ruchy">// Removed workaround - using proper :: syntax
+// Bug #30 fixed in Ruchy v3.79.0
+import std::fs
+
+fn read_file(path) {
+    fs::read_to_string(path)?  // Now works!
+}
+</code></pre>
+<ol start="3">
+<li><strong>Test thoroughly</strong>:</li>
+</ol>
+<pre><code class="language-bash">make validate
+make test-all
+make dogfood-full
+</code></pre>
+<ol start="4">
+<li><strong>Commit and resume</strong>:</li>
+</ol>
+<pre><code class="language-bash">git commit -m "FIX: Remove workaround for Ruchy bug #30
+
+- :: operator now works in v3.79.0
+- Implemented proper file I/O
+- Resuming Sprint 1 development
+- Closes tracking of bug #30"
+</code></pre>
+<h2 id="benefits-of-stop-the-line"><a class="header" href="#benefits-of-stop-the-line">Benefits of Stop The Line</a></h2>
+<h3 id="for-the-language-ruchy"><a class="header" href="#for-the-language-ruchy">For the Language (Ruchy)</a></h3>
+<p>✅ Bugs discovered and reported properly
+✅ Dogfooding improves language quality
+✅ Future users won't hit same issues
+✅ Maintainers get detailed, reproducible reports</p>
+<h3 id="for-this-project"><a class="header" href="#for-this-project">For This Project</a></h3>
+<p>✅ Maintains development momentum (work on other tasks)
+✅ Documents all workarounds clearly
+✅ Tracks bug resolution systematically
+✅ Ensures proper refactoring when bugs are fixed
+✅ Demonstrates real-world quality culture</p>
+<h3 id="for-toyota-way-principles"><a class="header" href="#for-toyota-way-principles">For Toyota Way Principles</a></h3>
+<p>✅ <strong>Jidoka</strong>: Stopped line when defect detected
+✅ <strong>Genchi Genbutsu</strong>: Went and saw the actual problem
+✅ <strong>Kaizen</strong>: Helping improve Ruchy language quality
+✅ <strong>Respect for People</strong>: Detailed bug report helps maintainers</p>
+<h2 id="quality-at-the-source"><a class="header" href="#quality-at-the-source">Quality at the Source</a></h2>
+<p>The key insight: <strong>Don't work around fundamental defects.</strong></p>
+<p>If we had:</p>
+<ul>
+<li>❌ Continued with hacky workarounds</li>
+<li>❌ Silently switched to different syntax</li>
+<li>❌ Ignored the official examples</li>
+<li>❌ Not filed a proper bug report</li>
+</ul>
+<p>Then:</p>
+<ul>
+<li>Future developers would hit the same issue</li>
+<li>The language bug would remain unfixed</li>
+<li>Our code would be fragile and confusing</li>
+<li>We'd waste time on workarounds</li>
+</ul>
+<p>By stopping the line:</p>
+<ul>
+<li>✅ Language improves</li>
+<li>✅ Documentation improves</li>
+<li>✅ Everyone benefits</li>
+<li>✅ Quality is built-in</li>
+</ul>
+<h2 id="handling-language-bugs"><a class="header" href="#handling-language-bugs">Handling Language Bugs</a></h2>
+<p>When dogfooding a new language, language bugs are <strong>expected</strong>. This is part of the value we provide!</p>
+<h3 id="quick-reference-card"><a class="header" href="#quick-reference-card">Quick Reference Card</a></h3>
+<pre><code>🛑 BUG FOUND IN RUCHY LANGUAGE?
+
+1. STOP - Halt current work
+2. REPRODUCE - Create minimal example (&lt; 20 lines)
+3. DOCUMENT - Use bug report template
+4. FILE - Submit to github.com/paiml/ruchy/issues
+5. WORKAROUND - Find alternative if possible
+6. TRACK - Update roadmap.yaml
+
+Then continue with:
+- Blocking: Work on different tool/chapter
+- High: Use workaround
+- Medium/Low: Continue normally
+</code></pre>
+<h2 id="lessons-learned"><a class="header" href="#lessons-learned">Lessons Learned</a></h2>
+<p>From our actual Stop The Line event (Ruchy bug #30):</p>
+<ol>
+<li><strong>Verify official examples</strong>: Even example code can have bugs</li>
+<li><strong>Test early</strong>: We found the bug in Sprint 1, Task 1</li>
+<li><strong>Document thoroughly</strong>: Future developers learn from this</li>
+<li><strong>Stay flexible</strong>: Infrastructure tasks kept momentum going</li>
+<li><strong>Respect the process</strong>: Following protocol helps everyone</li>
+</ol>
+<h2 id="genchi-genbutsu-go-and-see"><a class="header" href="#genchi-genbutsu-go-and-see">Genchi Genbutsu: Go and See</a></h2>
+<p>Notice how we didn't just assume the problem was our code:</p>
+<ol>
+<li>✅ Checked official examples</li>
+<li>✅ Tested the official examples themselves</li>
+<li>✅ Verified basic programs work</li>
+<li>✅ Isolated the exact operator causing issues</li>
+<li>✅ Created minimal reproduction</li>
+</ol>
+<p>This is <strong>Genchi Genbutsu</strong>—going to see the actual problem directly.</p>
+<h2 id="summary"><a class="header" href="#summary">Summary</a></h2>
+<p><strong>Jidoka in action</strong>:</p>
+<ul>
+<li>🛑 Stop immediately when defect detected</li>
+<li>🔍 Investigate root cause thoroughly</li>
+<li>📝 Document for others</li>
+<li>🐛 Report upstream properly</li>
+<li>🔧 Find workaround or alternative path</li>
+<li>📊 Track and monitor resolution</li>
+</ul>
+<p>This is how we build quality into our process, not bolt it on afterward.</p>
+<hr />
+<p><strong>Next</strong>: <a href="part4/./02_genchi_genbutsu.html">Genchi Genbutsu: Go and See</a> - Learn about direct observation and verification.</p>
+<p><strong>Related</strong>:</p>
+<ul>
+<li><a href="part4/../../../BUG_PROTOCOL.html">BUG_PROTOCOL.md</a> - Full protocol documentation</li>
+<li><a href="part4/../../../STOP_THE_LINE_REPORT.html">STOP_THE_LINE_REPORT.md</a> - Detailed report of bug #30</li>
+<li><a href="https://github.com/paiml/ruchy/issues/30">Ruchy Issue #30</a> - Actual bug report</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="quality-at-the-source-1"><a class="header" href="#quality-at-the-source-1">Quality at the Source</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="handling-language-bugs-1"><a class="header" href="#handling-language-bugs-1">Handling Language Bugs</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="bug-report-protocol"><a class="header" href="#bug-report-protocol">Bug Report Protocol</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="genchi-genbutsu-go-and-see-1"><a class="header" href="#genchi-genbutsu-go-and-see-1">Genchi Genbutsu: Go and See</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="direct-observation"><a class="header" href="#direct-observation">Direct Observation</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="debugging-mindset"><a class="header" href="#debugging-mindset">Debugging Mindset</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="kaizen-continuous-improvement"><a class="header" href="#kaizen-continuous-improvement">Kaizen: Continuous Improvement</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="metrics-over-time"><a class="header" href="#metrics-over-time">Metrics Over Time</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="refactoring-strategy"><a class="header" href="#refactoring-strategy">Refactoring Strategy</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="learning-from-failures"><a class="header" href="#learning-from-failures">Learning from Failures</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="respect-for-people"><a class="header" href="#respect-for-people">Respect for People</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="code-review-culture"><a class="header" href="#code-review-culture">Code Review Culture</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="documentation-standards"><a class="header" href="#documentation-standards">Documentation Standards</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="contributing-to-open-source"><a class="header" href="#contributing-to-open-source">Contributing to Open Source</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="appendix-a-ruchy-language-reference"><a class="header" href="#appendix-a-ruchy-language-reference">Appendix A: Ruchy Language Reference</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="syntax-overview"><a class="header" href="#syntax-overview">Syntax Overview</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="standard-library"><a class="header" href="#standard-library">Standard Library</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="the-15-ruchy-tools-1"><a class="header" href="#the-15-ruchy-tools-1">The 15 Ruchy Tools</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="appendix-b-unix-tool-reference"><a class="header" href="#appendix-b-unix-tool-reference">Appendix B: Unix Tool Reference</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="cat"><a class="header" href="#cat">cat</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="grep"><a class="header" href="#grep">grep</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="wc-cut-sort-uniq-sed-head-tail-jq"><a class="header" href="#wc-cut-sort-uniq-sed-head-tail-jq">wc, cut, sort, uniq, sed, head, tail, jq</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="appendix-c-testing-patterns"><a class="header" href="#appendix-c-testing-patterns">Appendix C: Testing Patterns</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="red-patterns"><a class="header" href="#red-patterns">RED Patterns</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="green-patterns"><a class="header" href="#green-patterns">GREEN Patterns</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="refactor-patterns"><a class="header" href="#refactor-patterns">REFACTOR Patterns</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="appendix-d-quality-metrics"><a class="header" href="#appendix-d-quality-metrics">Appendix D: Quality Metrics</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="code-coverage"><a class="header" href="#code-coverage">Code Coverage</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="mutation-scores"><a class="header" href="#mutation-scores">Mutation Scores</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="complexity-metrics"><a class="header" href="#complexity-metrics">Complexity Metrics</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="satd-analysis"><a class="header" href="#satd-analysis">SATD Analysis</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="appendix-e-troubleshooting"><a class="header" href="#appendix-e-troubleshooting">Appendix E: Troubleshooting</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="common-errors"><a class="header" href="#common-errors">Common Errors</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="build-issues"><a class="header" href="#build-issues">Build Issues</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="test-failures"><a class="header" href="#test-failures">Test Failures</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="contributors"><a class="header" href="#contributors">Contributors</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="references"><a class="header" href="#references">References</a></h1>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+
+            </nav>
+
+        </div>
+
+
+
+        <script>
+            window.playground_line_numbers = true;
+        </script>
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+        <script src="ace.js"></script>
+        <script src="editor.js"></script>
+        <script src="mode-rust.js"></script>
+        <script src="theme-dawn.js"></script>
+        <script src="theme-tomorrow_night.js"></script>
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+        <script>
+        window.addEventListener('load', function() {
+            window.setTimeout(window.print, 100);
+        });
+        </script>
+
+    </div>
+    </body>
+</html>

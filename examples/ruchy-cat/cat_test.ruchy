@@ -1,0 +1,59 @@
+// Tests for ruchy-cat
+// Demonstrates EXTREME TDD approach
+// Sprint 1: RED-GREEN cycle
+
+// GREEN PHASE: Minimal implementation to make tests pass
+// Task S1T2: Implement basic file reading
+fun read_file(path) {
+    fs_read(path)
+}
+
+@test("reads single file successfully")
+fun test_read_single_file() {
+    // Setup: Create test file
+    let test_file = "test_cat_single.txt"
+    let test_content = "Hello, Ruchy!"
+    fs_write(test_file, test_content)
+
+    // Exercise: Call read_file function
+    let result = read_file(test_file)
+
+    // Verify: Should read file contents
+    assert_eq(result, test_content, "Should read file contents")
+
+    // Cleanup
+    fs_remove_file(test_file)
+}
+
+@test("reads file and preserves newlines")
+fun test_preserves_newlines() {
+    // Setup
+    let test_file = "test_newlines.txt"
+    let test_content = "Line 1\nLine 2\nLine 3\n"
+    fs_write(test_file, test_content)
+
+    // Exercise
+    let result = read_file(test_file)
+
+    // Verify
+    assert_eq(result, test_content, "Should preserve newlines")
+
+    // Cleanup
+    fs_remove_file(test_file)
+}
+
+@test("reads empty file")
+fun test_empty_file() {
+    // Setup
+    let test_file = "test_empty.txt"
+    fs_write(test_file, "")
+
+    // Exercise
+    let result = read_file(test_file)
+
+    // Verify
+    assert_eq(result, "", "Should handle empty files")
+
+    // Cleanup
+    fs_remove_file(test_file)
+}

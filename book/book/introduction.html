@@ -1,0 +1,346 @@
+<!DOCTYPE HTML>
+<html lang="en" class="rust sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Introduction - Ruchy CLI Tools: Building Command-Line Applications with Extreme TDD</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Learn to build production-quality CLI tools using the Ruchy programming language with EXTREME TDD practices inspired by the Toyota Way">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "rust";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Ruchy CLI Tools: Building Command-Line Applications with Extreme TDD</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/paiml/ruchy-cli-tools-book" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                        <a href="https://github.com/paiml/ruchy-cli-tools-book/edit/main/book/src/introduction.md" title="Suggest an edit" aria-label="Suggest an edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="introduction"><a class="header" href="#introduction">Introduction</a></h1>
+<p>Welcome to <strong>Ruchy CLI Tools: Building Command-Line Applications with Extreme TDD</strong>!</p>
+<h2 id="what-this-book-is-about"><a class="header" href="#what-this-book-is-about">What This Book Is About</a></h2>
+<p>This book teaches you how to build production-quality command-line interface (CLI) tools using the <strong>Ruchy programming language</strong> while practicing <strong>EXTREME Test-Driven Development</strong> (TDD) inspired by the Toyota Way manufacturing principles.</p>
+<p>You'll learn by doing—recreating 10 classic Unix tools:</p>
+<ol>
+<li><strong>ruchy-cat</strong> - Concatenate and print files</li>
+<li><strong>ruchy-grep</strong> - Search for patterns in text</li>
+<li><strong>ruchy-wc</strong> - Count lines, words, and bytes</li>
+<li><strong>ruchy-cut</strong> - Extract fields from lines</li>
+<li><strong>ruchy-sort</strong> - Sort lines of text</li>
+<li><strong>ruchy-uniq</strong> - Remove duplicate lines</li>
+<li><strong>ruchy-sed</strong> - Stream editor for transforming text</li>
+<li><strong>ruchy-head</strong> - Output first part of files</li>
+<li><strong>ruchy-tail</strong> - Output last part of files</li>
+<li><strong>ruchy-jq</strong> - JSON query and manipulation</li>
+</ol>
+<h2 id="what-makes-this-book-different"><a class="header" href="#what-makes-this-book-different">What Makes This Book Different?</a></h2>
+<h3 id="1-extreme-tdd-not-just-tdd"><a class="header" href="#1-extreme-tdd-not-just-tdd">1. EXTREME TDD (Not Just TDD)</a></h3>
+<p>We don't just write tests—we practice <strong>EXTREME TDD</strong> with:</p>
+<ul>
+<li><strong>RED</strong>: Write failing test FIRST (always)</li>
+<li><strong>GREEN</strong>: Minimal code to pass (may be ugly)</li>
+<li><strong>REFACTOR</strong>: Improve while keeping tests green</li>
+<li><strong>MUTATION</strong>: Verify test quality (75%+ mutation score required)</li>
+<li><strong>PROPERTY</strong>: Test invariants (1000+ iterations per property)</li>
+<li><strong>QUALIFY</strong>: Pass all 15 Ruchy tools (100% compliance)</li>
+</ul>
+<h3 id="2-toyota-way-quality-culture"><a class="header" href="#2-toyota-way-quality-culture">2. Toyota Way Quality Culture</a></h3>
+<p>Inspired by Toyota's manufacturing excellence, we apply:</p>
+<ul>
+<li><strong>Jidoka (Autonomation)</strong>: Stop the line when defects are detected</li>
+<li><strong>Genchi Genbutsu (Go and See)</strong>: Direct observation and verification</li>
+<li><strong>Kaizen (Continuous Improvement)</strong>: Always improving quality metrics</li>
+<li><strong>Respect for People</strong>: Quality documentation and proper bug reports</li>
+</ul>
+<h3 id="3-zero-defect-tolerance"><a class="header" href="#3-zero-defect-tolerance">3. Zero Defect Tolerance</a></h3>
+<p>Quality is <strong>built-in, not bolted-on</strong>:</p>
+<ul>
+<li>✅ 85%+ code coverage (minimum)</li>
+<li>✅ 75%+ mutation score (test quality)</li>
+<li>✅ Zero clippy warnings</li>
+<li>✅ Zero SATD markers (no TODO/FIXME/HACK)</li>
+<li>✅ All 15 Ruchy tools pass</li>
+<li>✅ Pre-commit hooks block bad code</li>
+<li>✅ CI/CD enforces all quality gates</li>
+</ul>
+<h3 id="4-dogfooding-ruchy"><a class="header" href="#4-dogfooding-ruchy">4. Dogfooding Ruchy</a></h3>
+<p>This book is <strong>dogfooding</strong> the Ruchy programming language—we're using Ruchy to showcase what it can do. As early adopters, we'll encounter language bugs and handle them professionally using our "Stop The Line" protocol.</p>
+<h2 id="who-this-book-is-for"><a class="header" href="#who-this-book-is-for">Who This Book Is For</a></h2>
+<p>This book is for developers who want to:</p>
+<ul>
+<li><strong>Learn Ruchy</strong> through practical, real-world examples</li>
+<li><strong>Master TDD</strong> at an industrial-strength level</li>
+<li><strong>Build CLI tools</strong> with production-quality standards</li>
+<li><strong>Understand quality culture</strong> from Toyota Way principles</li>
+<li><strong>Experience dogfooding</strong> a new programming language</li>
+</ul>
+<p>You should be comfortable with:</p>
+<ul>
+<li>Basic programming concepts (variables, functions, loops)</li>
+<li>Command-line usage (terminal, shell, pipes)</li>
+<li>Software testing fundamentals</li>
+<li>Git and version control</li>
+</ul>
+<p>No prior Ruchy experience required!</p>
+<h2 id="how-to-use-this-book"><a class="header" href="#how-to-use-this-book">How to Use This Book</a></h2>
+<h3 id="part-i-foundations-chapters-1-3"><a class="header" href="#part-i-foundations-chapters-1-3">Part I: Foundations (Chapters 1-3)</a></h3>
+<p>Start here if you're new to Ruchy or EXTREME TDD. Learn the tools, philosophy, and CLI development basics.</p>
+<h3 id="part-ii-building-unix-classics-chapters-1-10"><a class="header" href="#part-ii-building-unix-classics-chapters-1-10">Part II: Building Unix Classics (Chapters 1-10)</a></h3>
+<p>The core of the book. Each chapter builds one complete CLI tool from scratch using EXTREME TDD. Follow along in order, or jump to the tool that interests you most.</p>
+<h3 id="part-iii-advanced-topics-chapters-1-5"><a class="header" href="#part-iii-advanced-topics-chapters-1-5">Part III: Advanced Topics (Chapters 1-5)</a></h3>
+<p>Deep dives into testing strategies, mutation testing, property-based testing, quality gates, and performance optimization.</p>
+<h3 id="part-iv-the-toyota-way-chapters-1-4"><a class="header" href="#part-iv-the-toyota-way-chapters-1-4">Part IV: The Toyota Way (Chapters 1-4)</a></h3>
+<p>Learn how Toyota's manufacturing principles apply to software quality. Real-world lessons from dogfooding Ruchy.</p>
+<h3 id="appendices"><a class="header" href="#appendices">Appendices</a></h3>
+<p>Quick reference for Ruchy language, Unix tools, testing patterns, quality metrics, and troubleshooting.</p>
+<h2 id="code-examples"><a class="header" href="#code-examples">Code Examples</a></h2>
+<p>All code in this book is:</p>
+<ul>
+<li><strong>Tested</strong>: Every example has comprehensive tests</li>
+<li><strong>Verified</strong>: All code passes quality gates</li>
+<li><strong>Executable</strong>: You can run every example</li>
+<li><strong>Open Source</strong>: Available at <a href="https://github.com/paiml/ruchy-cli-tools-book">github.com/paiml/ruchy-cli-tools-book</a></li>
+</ul>
+<h2 id="conventions-used"><a class="header" href="#conventions-used">Conventions Used</a></h2>
+<h3 id="code-blocks"><a class="header" href="#code-blocks">Code Blocks</a></h3>
+<pre><code class="language-ruchy">// Ruchy code examples look like this
+fn main() {
+    println("Hello, Ruchy!")
+}
+</code></pre>
+<h3 id="annotations"><a class="header" href="#annotations">Annotations</a></h3>
+<pre><code class="language-ruchy">// RED: This test will fail initially
+@test("reads file")
+fun test_read_file() {
+    assert_eq(read_file("test.txt"), "expected content")
+}
+</code></pre>
+<h3 id="quality-notes"><a class="header" href="#quality-notes">Quality Notes</a></h3>
+<blockquote>
+<p><strong>QUALITY NOTE</strong>: Important quality-related information about testing, coverage, or Toyota Way principles.</p>
+</blockquote>
+<h3 id="stop-the-line"><a class="header" href="#stop-the-line">Stop The Line</a></h3>
+<blockquote>
+<p><strong>🛑 STOP THE LINE</strong>: Critical quality issues that require immediate attention, just like on a Toyota production line.</p>
+</blockquote>
+<h3 id="ruchy-version"><a class="header" href="#ruchy-version">Ruchy Version</a></h3>
+<p>This book uses <strong>Ruchy v3.78.0+</strong>. Some features may change as the language evolves.</p>
+<h2 id="getting-help"><a class="header" href="#getting-help">Getting Help</a></h2>
+<ul>
+<li><strong>Ruchy Documentation</strong>: <a href="https://ruchy-lang.org">ruchy-lang.org</a></li>
+<li><strong>Book Repository</strong>: <a href="https://github.com/paiml/ruchy-cli-tools-book">github.com/paiml/ruchy-cli-tools-book</a></li>
+<li><strong>Issues</strong>: Report problems via GitHub Issues</li>
+<li><strong>Discussions</strong>: Join the Ruchy community</li>
+</ul>
+<h2 id="a-note-on-quality"><a class="header" href="#a-note-on-quality">A Note on Quality</a></h2>
+<p>This book practices what it preaches. The entire book project:</p>
+<ul>
+<li>Follows EXTREME TDD methodology</li>
+<li>Enforces quality gates via pre-commit hooks</li>
+<li>Runs comprehensive CI/CD pipelines</li>
+<li>Documents "Stop The Line" events (like <a href="https://github.com/paiml/ruchy/issues/30">Ruchy bug #30</a>)</li>
+<li>Maintains 85%+ code coverage</li>
+<li>Achieves 75%+ mutation scores</li>
+</ul>
+<p>You're not just reading about quality—you're seeing it in action.</p>
+<h2 id="lets-begin"><a class="header" href="#lets-begin">Let's Begin!</a></h2>
+<p>Ready to build production-quality CLI tools with EXTREME TDD? Let's start with <a href="./part1/01_getting_started.html">Part I: Getting Started with Ruchy</a>.</p>
+<hr />
+<p><strong>Remember</strong>: Quality is built-in, not bolted-on. We stop the line when defects are detected. We verify directly through tests. We continuously improve. We respect the craft.</p>
+<p>Welcome to EXTREME TDD with Ruchy! 🚀</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+
+                            <a rel="next prefetch" href="part1/01_getting_started.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+
+                    <a rel="next prefetch" href="part1/01_getting_started.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+        <script>
+            window.playground_line_numbers = true;
+        </script>
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+        <script src="ace.js"></script>
+        <script src="editor.js"></script>
+        <script src="mode-rust.js"></script>
+        <script src="theme-dawn.js"></script>
+        <script src="theme-tomorrow_night.js"></script>
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

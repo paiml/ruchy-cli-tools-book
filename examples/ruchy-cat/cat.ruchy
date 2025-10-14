@@ -1,0 +1,27 @@
+// ruchy-cat: Concatenate and print files
+// Chapter 1 example from Ruchy CLI Tools Book
+
+fun read_file(path) {
+    // Read file contents
+    // Will implement with proper error handling
+    Ok("file contents")
+}
+
+fun main(args) {
+    if args.len() == 0 {
+        // Read from stdin
+        println("Reading from stdin...")
+    } else {
+        // Concatenate files
+        for arg in args {
+            match read_file(arg) {
+                Ok(contents) => print(contents),
+                Err(e) => {
+                    eprintln(f"Error: {e}")
+                    return 1
+                }
+            }
+        }
+    }
+    0
+}
