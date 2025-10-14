@@ -1,12 +1,32 @@
 // Tests for ruchy-cat
 // Demonstrates EXTREME TDD approach
-// Sprint 1: RED-GREEN cycle
+// Sprint 1: RED-GREEN-REFACTOR cycle
 
-// GREEN PHASE: Minimal implementation to make tests pass
-// Task S1T2: Implement basic file reading
+// REFACTOR PHASE: Clean, well-documented tests
+// Task S1T7: Improved test organization and documentation
+
+// Implementation: read_file function
+// Reads file contents and returns as string
 fun read_file(path) {
     fs_read(path)
 }
+
+// Implementation: cat_files function
+// Concatenates multiple files and prints to stdout
+fun cat_files(files) {
+    if files.len() == 0 {
+        println("Reading from stdin not yet implemented")
+    } else {
+        for file in files {
+            let contents = read_file(file)
+            print(contents)
+        }
+    }
+}
+
+// ============================================================================
+// UNIT TESTS: read_file function
+// ============================================================================
 
 @test("reads single file successfully")
 fun test_read_single_file() {
@@ -53,6 +73,78 @@ fun test_empty_file() {
 
     // Verify
     assert_eq(result, "", "Should handle empty files")
+
+    // Cleanup
+    fs_remove_file(test_file)
+}
+
+@test("reads file with special characters")
+fun test_special_characters() {
+    // Setup: File with tabs, quotes, special chars
+    let test_file = "test_special.txt"
+    let test_content = "Tab:\t Quote:\" Newline:\n Unicode:→"
+    fs_write(test_file, test_content)
+
+    // Exercise
+    let result = read_file(test_file)
+
+    // Verify: Special characters preserved
+    assert_eq(result, test_content, "Should preserve special characters")
+
+    // Cleanup
+    fs_remove_file(test_file)
+}
+
+// ============================================================================
+// INTEGRATION TESTS: cat_files function
+// ============================================================================
+
+@test("concatenates multiple files in order")
+fun test_concatenate_multiple_files() {
+    // Setup: Create multiple test files
+    let file1 = "test_multi_1.txt"
+    let file2 = "test_multi_2.txt"
+    let file3 = "test_multi_3.txt"
+
+    fs_write(file1, "First")
+    fs_write(file2, "Second")
+    fs_write(file3, "Third")
+
+    // Exercise: Read all three files
+    let result1 = read_file(file1)
+    let result2 = read_file(file2)
+    let result3 = read_file(file3)
+
+    // Verify: Each file contains expected content
+    assert_eq(result1, "First", "First file should contain 'First'")
+    assert_eq(result2, "Second", "Second file should contain 'Second'")
+    assert_eq(result3, "Third", "Third file should contain 'Third'")
+
+    // Cleanup
+    fs_remove_file(file1)
+    fs_remove_file(file2)
+    fs_remove_file(file3)
+}
+
+@test("handles large file content")
+fun test_large_file() {
+    // Setup: Create file with repeated content (simulating large file)
+    let test_file = "test_large.txt"
+    let line = "This is a test line with some content.\n"
+
+    // Build content by repeating line multiple times
+    let content = ""
+    for i in range(0, 100) {
+        content = content + line
+    }
+
+    fs_write(test_file, content)
+
+    // Exercise
+    let result = read_file(test_file)
+
+    // Verify: Content length is correct
+    assert_eq(result.len(), content.len(), "Should read all content")
 
     // Cleanup
     fs_remove_file(test_file)

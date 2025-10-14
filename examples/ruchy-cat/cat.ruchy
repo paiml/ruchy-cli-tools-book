@@ -1,27 +1,60 @@
 // ruchy-cat: Concatenate and print files
 // Chapter 1 example from Ruchy CLI Tools Book
+// Demonstrates EXTREME TDD approach
+//
+// Usage:
+//   ruchy run cat.ruchy file1.txt file2.txt
+//   echo "text" | ruchy run cat.ruchy
 
+// REFACTOR PHASE: Clean, well-documented implementation
+// Sprint 1, Task S1T7: Refactoring for clarity
+
+// Reads the contents of a file at the given path.
+// Returns the file contents as a string.
+//
+// Example:
+//   let contents = read_file("example.txt")
+//   println(contents)
 fun read_file(path) {
-    // Read file contents
-    // Will implement with proper error handling
-    Ok("file contents")
+    fs_read(path)
 }
 
-fun main(args) {
-    if args.len() == 0 {
-        // Read from stdin
-        println("Reading from stdin...")
+// Concatenates and prints multiple files to stdout.
+// If no files are specified, reads from stdin.
+//
+// Arguments:
+//   files - List of file paths to concatenate
+//
+// Example:
+//   cat_files(["file1.txt", "file2.txt"])
+fun cat_files(files) {
+    if files.len() == 0 {
+        // Read from stdin (not yet implemented)
+        println("Reading from stdin not yet implemented")
     } else {
-        // Concatenate files
-        for arg in args {
-            match read_file(arg) {
-                Ok(contents) => print(contents),
-                Err(e) => {
-                    eprintln(f"Error: {e}")
-                    return 1
-                }
-            }
+        // Concatenate and print each file
+        for file in files {
+            let contents = read_file(file)
+            print(contents)
         }
     }
-    0
+}
+
+// Main entry point for ruchy-cat command-line tool
+fun main() {
+    let args = env_args()
+
+    // Skip program name (first argument)
+    let files = if args.len() > 1 {
+        // Get all arguments after program name
+        let file_list = []
+        for i in range(1, args.len()) {
+            file_list = file_list + [args[i]]
+        }
+        file_list
+    } else {
+        []
+    }
+
+    cat_files(files)
 }
