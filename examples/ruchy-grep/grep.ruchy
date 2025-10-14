@@ -1,0 +1,8 @@
+// ruchy-grep: Search for patterns in files
+// Chapter 2 example from Ruchy CLI Tools Book
+
+// Searches for a pattern in a file and returns matching lines.
+// This is a STUB implementation for RED phase.
+fun grep_in_file(pattern, file_path) {
+    ""
+}

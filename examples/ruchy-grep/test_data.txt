@@ -1,0 +1,6 @@
+Hello World
+This is a test file
+Pattern matching is powerful
+HELLO in uppercase
+Another line with pattern
+No match here

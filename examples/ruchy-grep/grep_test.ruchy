@@ -1,0 +1,44 @@
+// ruchy-grep tests
+// Chapter 2 example from Ruchy CLI Tools Book
+// Following EXTREME TDD methodology
+
+// ============================================================================
+// STUB IMPLEMENTATION - RED PHASE (S2T1)
+// ============================================================================
+
+// Searches for a pattern in a file and returns matching lines.
+// GREEN PHASE (S2T2): Minimal implementation
+fun grep_in_file(pattern, file_path) {
+    let content = fs_read(file_path)
+    let lines = split(content, "\n")
+    let matches = ""
+
+    for line in lines {
+        if line.contains(pattern) {
+            matches = matches + line + "\n"
+        }
+    }
+
+    matches
+}
+
+// ============================================================================
+// UNIT TESTS - Basic Functionality
+// ============================================================================
+
+@test("finds pattern in single line")
+fun test_find_pattern_in_file() {
+    // Setup: Create test file with known content
+    let test_file = "test_grep_single.txt"
+    let test_content = "Hello World\nThis is a test\nPattern matching\nAnother line\n"
+    fs_write(test_file, test_content)
+
+    // Exercise: Search for "Pattern" in file
+    let result = grep_in_file("Pattern", test_file)
+
+    // Verify: Should return lines containing the pattern
+    assert_eq(result, "Pattern matching\n", "Should find line with pattern")
+
+    // Cleanup
+    fs_remove_file(test_file)
+}
