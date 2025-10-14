@@ -1,0 +1,6 @@
+// Minimal reproduction for RUCHY-BUG-FMT
+// Issue: ruchy fmt corrupts files by writing AST instead of formatted code
+
+fun example() {
+    println("Hello")
+}

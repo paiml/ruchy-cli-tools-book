@@ -1,0 +1,7 @@
+// Minimal reproduction for RUCHY-BUG-TEST-ATTR
+// Issue: @test("description") transpiles to invalid Rust #[test (description)]
+
+@test("this is a test description")
+fun test_example() {
+    assert_eq(1 + 1, 2)
+}
