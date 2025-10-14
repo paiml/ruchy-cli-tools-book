@@ -1,0 +1,15 @@
+// Minimal reproduction for RUCHY-BUG-TEST-ASSERTIONS
+// Issue: ruchy test reports PASS even when assertions fail
+// Expected: Test should FAIL when assertion is false
+// Actual: Test reports as PASSED
+
+@test("this assertion should fail")
+fun test_failing_assertion() {
+    let x = 1 + 1
+    assert_eq(x, 3, "Expected 2 to equal 3 - this should fail")
+}
+
+@test("this assertion should also fail")
+fun test_another_failure() {
+    assert_eq("hello", "world", "These strings are not equal")
+}
