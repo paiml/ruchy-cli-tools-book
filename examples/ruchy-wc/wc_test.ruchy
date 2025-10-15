@@ -1,0 +1,145 @@
+// ruchy-wc tests
+// Chapter 3 example from Ruchy CLI Tools Book
+// Following EXTREME TDD methodology
+
+// ============================================================================
+// IMPLEMENTATION - GREEN PHASE (S3T1-S3T6)
+// ============================================================================
+
+// Counts lines in a file.
+fun count_lines(file_path) {
+    let content = fs_read(file_path)
+    let lines = 0
+
+    for i in range(0, content.len()) {
+        let ch = content[i]
+        if ch == "\n" {
+            lines = lines + 1
+        }
+    }
+
+    lines
+}
+
+// Counts words in a file.
+fun count_words(file_path) {
+    let content = fs_read(file_path)
+    let words = 0
+    let in_word = false
+
+    for i in range(0, content.len()) {
+        let ch = content[i]
+
+        // Count words (whitespace-delimited)
+        if ch == " " || ch == "\n" || ch == "\t" {
+            if in_word {
+                words = words + 1
+                in_word = false
+            }
+        } else {
+            in_word = true
+        }
+    }
+
+    // Count last word if no trailing whitespace
+    if in_word {
+        words = words + 1
+    }
+
+    words
+}
+
+// Counts bytes in a file.
+fun count_bytes(file_path) {
+    let content = fs_read(file_path)
+    content.len()
+}
+
+// ============================================================================
+// UNIT TESTS - Basic Functionality
+// ============================================================================
+
+@test("counts lines in file")
+fun test_count_lines() {
+    let test_file = "test_wc_lines.txt"
+    let test_content = "Line 1\nLine 2\nLine 3\n"
+    fs_write(test_file, test_content)
+
+    let result = count_lines(test_file)
+
+    assert_eq(result, 3, "Should count 3 lines")
+
+    fs_remove_file(test_file)
+}
+
+@test("counts words in file")
+fun test_count_words() {
+    let test_file = "test_wc_words.txt"
+    let test_content = "hello world test file\n"
+    fs_write(test_file, test_content)
+
+    let result = count_words(test_file)
+
+    assert_eq(result, 4, "Should count 4 words")
+
+    fs_remove_file(test_file)
+}
+
+@test("counts bytes in file")
+fun test_count_bytes() {
+    let test_file = "test_wc_bytes.txt"
+    let test_content = "hello"
+    fs_write(test_file, test_content)
+
+    let result = count_bytes(test_file)
+
+    assert_eq(result, 5, "Should count 5 bytes")
+
+    fs_remove_file(test_file)
+}
+
+@test("handles empty file")
+fun test_empty_file() {
+    let test_file = "test_wc_empty.txt"
+    fs_write(test_file, "")
+
+    let lines = count_lines(test_file)
+    let words = count_words(test_file)
+    let bytes = count_bytes(test_file)
+
+    assert_eq(lines, 0, "Should count 0 lines")
+    assert_eq(words, 0, "Should count 0 words")
+    assert_eq(bytes, 0, "Should count 0 bytes")
+
+    fs_remove_file(test_file)
+}
+
+@test("handles file with no trailing newline")
+fun test_no_trailing_newline() {
+    let test_file = "test_wc_no_newline.txt"
+    let test_content = "hello world"
+    fs_write(test_file, test_content)
+
+    let lines = count_lines(test_file)
+    let words = count_words(test_file)
+    let bytes = count_bytes(test_file)
+
+    assert_eq(lines, 0, "Should count 0 lines (no newline)")
+    assert_eq(words, 2, "Should count 2 words")
+    assert_eq(bytes, 11, "Should count 11 bytes")
+
+    fs_remove_file(test_file)
+}
+
+@test("handles multiple spaces between words")
+fun test_multiple_spaces() {
+    let test_file = "test_wc_spaces.txt"
+    let test_content = "hello    world  test\n"
+    fs_write(test_file, test_content)
+
+    let result = count_words(test_file)
+
+    assert_eq(result, 3, "Should count 3 words despite multiple spaces")
+
+    fs_remove_file(test_file)
+}
