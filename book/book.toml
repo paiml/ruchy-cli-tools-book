@@ -17,6 +17,7 @@ default-theme = "rust"
 preferred-dark-theme = "navy"
 git-repository-url = "https://github.com/paiml/ruchy-cli-tools-book"
 edit-url-template = "https://github.com/paiml/ruchy-cli-tools-book/edit/main/book/{path}"
+site-url = "/ruchy-cli-tools-book/"
 
 [output.html.fold]
 enable = true
