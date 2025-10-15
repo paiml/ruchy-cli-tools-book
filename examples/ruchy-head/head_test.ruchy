@@ -1,0 +1,111 @@
+// ruchy-head: Output the first n lines of a file
+// Sprint 4 - Chapter 4 example from Ruchy CLI Tools Book
+// EXTREME TDD: Tests and implementation together
+
+// Returns the first n lines from a file.
+// If n is greater than the number of lines, returns all lines.
+// If n is 0, returns empty string.
+fun head_lines(file_path, n) {
+    let content = fs_read(file_path)
+    let result = ""
+    let line_count = 0
+
+    for i in range(0, content.len()) {
+        let ch = content[i]
+
+        if line_count < n {
+            result = result + ch
+        }
+
+        if ch == "\n" {
+            line_count = line_count + 1
+            if line_count >= n {
+                return result
+            }
+        }
+    }
+
+    result
+}
+
+// ============================================================================
+// UNIT TESTS
+// ============================================================================
+
+@test("returns first n lines from file")
+fun test_head_basic() {
+    let test_file = "test_head_basic.txt"
+    let test_content = "Line 1\nLine 2\nLine 3\nLine 4\nLine 5\n"
+    fs_write(test_file, test_content)
+
+    let result = head_lines(test_file, 3)
+
+    assert_eq(result, "Line 1\nLine 2\nLine 3\n", "Should return first 3 lines")
+
+    fs_remove_file(test_file)
+}
+
+@test("returns single line when n=1")
+fun test_head_single() {
+    let test_file = "test_head_single.txt"
+    let test_content = "First line\nSecond line\nThird line\n"
+    fs_write(test_file, test_content)
+
+    let result = head_lines(test_file, 1)
+
+    assert_eq(result, "First line\n", "Should return only first line")
+
+    fs_remove_file(test_file)
+}
+
+@test("returns empty string when n=0")
+fun test_head_zero() {
+    let test_file = "test_head_zero.txt"
+    let test_content = "Line 1\nLine 2\nLine 3\n"
+    fs_write(test_file, test_content)
+
+    let result = head_lines(test_file, 0)
+
+    assert_eq(result, "", "Should return empty string when n=0")
+
+    fs_remove_file(test_file)
+}
+
+@test("returns all lines when n exceeds file length")
+fun test_head_exceeds() {
+    let test_file = "test_head_exceeds.txt"
+    let test_content = "Line 1\nLine 2\n"
+    fs_write(test_file, test_content)
+
+    let result = head_lines(test_file, 100)
+
+    assert_eq(result, "Line 1\nLine 2\n", "Should return all lines")
+
+    fs_remove_file(test_file)
+}
+
+@test("handles file without trailing newline")
+fun test_head_no_trailing_newline() {
+    let test_file = "test_head_no_trailing.txt"
+    let test_content = "Line 1\nLine 2\nLine 3"
+    fs_write(test_file, test_content)
+
+    let result = head_lines(test_file, 2)
+
+    assert_eq(result, "Line 1\nLine 2\n", "Should return first 2 complete lines")
+
+    fs_remove_file(test_file)
+}
+
+@test("handles empty file")
+fun test_head_empty() {
+    let test_file = "test_head_empty.txt"
+    let test_content = ""
+    fs_write(test_file, test_content)
+
+    let result = head_lines(test_file, 5)
+
+    assert_eq(result, "", "Should return empty string for empty file")
+
+    fs_remove_file(test_file)
+}
