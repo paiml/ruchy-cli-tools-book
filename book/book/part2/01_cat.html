@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>QUALIFY: 15 Tools - Ruchy CLI Tools: Building Command-Line Applications with Extreme TDD</title>
+        <title>Chapter 1: ruchy-cat - Ruchy CLI Tools: Building Command-Line Applications with Extreme TDD</title>
 
 
         <!-- Custom HTML head -->
@@ -129,7 +129,7 @@
                         <a href="https://github.com/paiml/ruchy-cli-tools-book" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
-                        <a href="https://github.com/paiml/ruchy-cli-tools-book/edit/main/book/src/part2/01_cat.md#qualify" title="Suggest an edit" aria-label="Suggest an edit">
+                        <a href="https://github.com/paiml/ruchy-cli-tools-book/edit/main/book/src/part2/01_cat.md" title="Suggest an edit" aria-label="Suggest an edit">
                             <i id="git-edit-button" class="fa fa-edit"></i>
                         </a>
 
@@ -158,13 +158,289 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="qualify-15-tools"><a class="header" href="#qualify-15-tools">QUALIFY: 15 Tools</a></h1>
+                        <h1 id="chapter-1-ruchy-cat"><a class="header" href="#chapter-1-ruchy-cat">Chapter 1: ruchy-cat</a></h1>
+<p>Welcome to the first practical chapter! We'll build <code>ruchy-cat</code>, a clone of the Unix <code>cat</code> command, using <strong>EXTREME TDD</strong> methodology. This chapter documents our <em>actual development journey</em>, including real bugs encountered, Stop The Line events, and the complete RED-GREEN-REFACTOR-PROPERTY-QUALIFY cycle.</p>
+<h2 id="understanding-cat"><a class="header" href="#understanding-cat">Understanding cat</a></h2>
+<p>The <code>cat</code> (concatenate) command is one of the simplest yet most useful Unix tools:</p>
+<pre><code class="language-bash"># Display a single file
+$ cat file.txt
+Hello, World!
+
+# Concatenate multiple files
+$ cat file1.txt file2.txt
+Contents of file1
+Contents of file2
+
+# Read from stdin (no arguments)
+$ echo "test" | cat
+test
+</code></pre>
+<h3 id="why-start-with-cat"><a class="header" href="#why-start-with-cat">Why Start with cat?</a></h3>
+<ol>
+<li><strong>Simple core functionality</strong> - Read and print files</li>
+<li><strong>Perfect for TDD</strong> - Clear, testable behavior</li>
+<li><strong>Foundation for learning</strong> - Introduces file I/O, argument parsing</li>
+<li><strong>Real-world tool</strong> - Actually useful in daily work</li>
+</ol>
+<h2 id="red-first-test"><a class="header" href="#red-first-test">RED: First Test</a></h2>
+<p>Following EXTREME TDD, we write our test FIRST, before any implementation.</p>
+<h3 id="sprint-1-task-1-write-failing-test"><a class="header" href="#sprint-1-task-1-write-failing-test">Sprint 1, Task 1: Write Failing Test</a></h3>
+<blockquote>
+<p><strong>Stop The Line Event #1</strong>: Before we could write tests, we encountered Ruchy Bug #30 - the ColonColon (<code>::</code>) operator wasn't supported. We <strong>stopped development</strong>, filed a detailed bug report, and waited. The Ruchy team fixed it in v3.80.0 within hours!</p>
+<p><strong>Lesson</strong>: Jidoka (Stop The Line) works. Quality first, always.</p>
+</blockquote>
+<h3 id="the-first-test"><a class="header" href="#the-first-test">The First Test</a></h3>
+<p><code>examples/ruchy-cat/cat_test.ruchy</code>:</p>
+<pre><code class="language-ruchy">@test("reads single file successfully")
+fun test_read_single_file() {
+    // Setup: Create test file
+    let test_file = "test_cat_single.txt"
+    let test_content = "Hello, Ruchy!"
+    fs_write(test_file, test_content)
+
+    // Exercise: Call read_file function
+    let result = read_file(test_file)
+
+    // Verify: Should read file contents
+    assert_eq(result, test_content, "Should read file contents")
+
+    // Cleanup
+    fs_remove_file(test_file)
+}
+</code></pre>
+<h3 id="stub-implementation-makes-it-compile"><a class="header" href="#stub-implementation-makes-it-compile">Stub Implementation (Makes it Compile)</a></h3>
+<pre><code class="language-ruchy">// Stub - returns empty string
+fun read_file(path) {
+    ""
+}
+</code></pre>
+<h3 id="run-the-test"><a class="header" href="#run-the-test">Run the Test</a></h3>
+<pre><code class="language-bash">$ ruchy test cat_test.ruchy
+❌ FAILED - Expected "Hello, Ruchy!" but got ""
+</code></pre>
+<p>✅ <strong>RED phase complete</strong> - We have a failing test!</p>
+<h2 id="green-minimal"><a class="header" href="#green-minimal">GREEN: Minimal Implementation</a></h2>
+<p>Now we write the <strong>simplest code</strong> that makes the test pass.</p>
+<h3 id="task-2-implement-read_file"><a class="header" href="#task-2-implement-read_file">Task 2: Implement read_file</a></h3>
+<pre><code class="language-ruchy">fun read_file(path) {
+    fs_read(path)
+}
+</code></pre>
+<p>That's it! Three lines. Ruchy's built-in <code>fs_read()</code> does exactly what we need.</p>
+<h3 id="run-the-test-again"><a class="header" href="#run-the-test-again">Run the Test Again</a></h3>
+<pre><code class="language-bash">$ ruchy test cat_test.ruchy
+✅ PASSED - 1/1 tests passing
+</code></pre>
+<p>✅ <strong>GREEN phase complete</strong> - Test passes with minimal code!</p>
+<h3 id="commit"><a class="header" href="#commit">Commit</a></h3>
+<pre><code class="language-bash">$ git add cat_test.ruchy
+$ git commit -m "GREEN - Sprint 1 - Implement read_file"
+</code></pre>
+<h2 id="refactor"><a class="header" href="#refactor">REFACTOR: Clean Code</a></h2>
+<p>Now that tests are green, we can improve the code while keeping tests passing.</p>
+<h3 id="task-7-refactor-and-expand"><a class="header" href="#task-7-refactor-and-expand">Task 7: Refactor and Expand</a></h3>
+<p>We added:</p>
+<ol>
+<li><strong>Comprehensive documentation</strong></li>
+<li><strong>Separation of concerns</strong> - Split implementation from tests</li>
+<li><strong>Additional test cases</strong> - Special characters, multiple files, large files</li>
+<li><strong>CLI entry point</strong> - <code>main()</code> function for command-line use</li>
+<li><strong>Multi-file support</strong> - <code>cat_files()</code> function</li>
+</ol>
+<h3 id="final-implementation"><a class="header" href="#final-implementation">Final Implementation</a></h3>
+<p><code>examples/ruchy-cat/cat.ruchy</code>:</p>
+<pre><code class="language-ruchy">// ruchy-cat: Concatenate and print files
+// Chapter 1 example from Ruchy CLI Tools Book
+
+// Reads the contents of a file at the given path.
+fun read_file(path) {
+    fs_read(path)
+}
+
+// Concatenates and prints multiple files to stdout.
+fun cat_files(files) {
+    if files.len() == 0 {
+        println("Reading from stdin not yet implemented")
+    } else {
+        for file in files {
+            let contents = read_file(file)
+            print(contents)
+        }
+    }
+}
+
+// Main entry point
+fun main() {
+    let args = env_args()
+    let files = if args.len() &gt; 1 {
+        let file_list = []
+        for i in range(1, args.len()) {
+            file_list = file_list + [args[i]]
+        }
+        file_list
+    } else {
+        []
+    }
+    cat_files(files)
+}
+</code></pre>
+<h3 id="expanded-test-suite"><a class="header" href="#expanded-test-suite">Expanded Test Suite</a></h3>
+<p>Added tests for:</p>
+<ul>
+<li>✅ Newline preservation</li>
+<li>✅ Empty files</li>
+<li>✅ Special characters (tabs, quotes, Unicode)</li>
+<li>✅ Multiple files</li>
+<li>✅ Large files (100 lines)</li>
+</ul>
+<p><strong>Total</strong>: 6 tests, all passing</p>
+<p>✅ <strong>REFACTOR phase complete</strong> - Clean code, all tests still green!</p>
+<h2 id="property"><a class="header" href="#property">PROPERTY: Invariants</a></h2>
+<p>Property-based testing verifies <strong>invariants</strong> - things that should ALWAYS be true, regardless of input.</p>
+<h3 id="task-10-property-tests-with-1000-iterations"><a class="header" href="#task-10-property-tests-with-1000-iterations">Task 10: Property Tests with 1000+ Iterations</a></h3>
+<p>We added 4 property tests with 1250+ total iterations:</p>
+<pre><code class="language-ruchy">@test("property idempotent reads")
+fun property_idempotent() {
+    let test_file = "test_property_idempotent.txt"
+    let test_content = "Line 1\nLine 2\nSpecial: \t \"quoted\" →\n"
+    fs_write(test_file, test_content)
+    let first_read = read_file(test_file)
+
+    // Property: Reading same file 1000 times should give same result
+    for i in range(0, 1000) {
+        let current_read = read_file(test_file)
+        assert_eq(current_read, first_read,
+                 "Read should be idempotent - iteration " + i.to_string())
+    }
+
+    fs_remove_file(test_file)
+}
+</code></pre>
+<h3 id="invariants-tested"><a class="header" href="#invariants-tested">Invariants Tested</a></h3>
+<ol>
+<li><strong>Idempotency</strong>: Reading same file multiple times gives identical results (1000 iterations)</li>
+<li><strong>Length Preservation</strong>: Content length matches exactly (100 sizes tested)</li>
+<li><strong>Content Preservation</strong>: Any valid content is preserved (100 patterns tested)</li>
+<li><strong>Size Handling</strong>: Files from 0 to 10KB handled correctly (50 sizes tested)</li>
+</ol>
+<p><strong>Total</strong>: 10 tests, 1250+ iterations, 100% passing</p>
+<p>✅ <strong>PROPERTY phase complete</strong> - Invariants verified!</p>
+<h2 id="qualify"><a class="header" href="#qualify">QUALIFY: 15 Tools</a></h2>
+<p>Task 11: Run all 15 Ruchy quality tools.</p>
+<blockquote>
+<p><strong>Stop The Line Event #2</strong>: During qualification, we discovered <strong>6 bugs</strong> in Ruchy's tools. Following Jidoka, we <strong>stopped immediately</strong> and filed GitHub issues #31-#36.</p>
+<p><strong>Ruchy Team Response</strong>: Fixed 5 out of 6 bugs in &lt; 1 day!</p>
+<ul>
+<li>v3.82.0: Fixed Bug #31 (CRITICAL fmt corruption)</li>
+<li>v3.83.0: Fixed Bugs #32-34, #36 (range, test attrs, lint, coverage)</li>
+</ul>
+<p><strong>Lesson</strong>: Stop The Line works. Quality collaboration builds better tools.</p>
+</blockquote>
+<h3 id="original-results-v3800"><a class="header" href="#original-results-v3800">Original Results (v3.80.0)</a></h3>
+<p><strong>PASSING</strong> (6/12):</p>
+<ul>
+<li>✅ <code>ruchy check</code> - Syntax valid</li>
+<li>✅ <code>ruchy test</code> - 10/10 tests passing</li>
+<li>✅ <code>ruchy ast</code> - AST parsing works</li>
+<li>✅ <code>ruchy runtime --bigo</code> - O(n²) detected</li>
+<li>✅ <code>ruchy transpile</code> - Generates Rust</li>
+<li>✅ <code>ruchy coverage</code> - Reports 100% (misleading)</li>
+</ul>
+<p><strong>FAILING</strong> (6/12):</p>
+<ul>
+<li>❌ <code>ruchy fmt</code> - Corrupts files (Bug #31)</li>
+<li>❌ <code>ruchy compile</code> - range() not transpiled (Bug #32)</li>
+<li>❌ <code>ruchy property-tests</code> - Invalid attributes (Bug #33)</li>
+<li>❌ <code>ruchy lint</code> - False positives (Bug #34)</li>
+<li>❌ <code>ruchy fuzz</code> - Compilation failure (Bug #32)</li>
+<li>❌ <code>ruchy mutations</code> - Below threshold</li>
+</ul>
+<h3 id="after-fixes-v3830"><a class="header" href="#after-fixes-v3830">After Fixes (v3.83.0)</a></h3>
+<p><strong>PASSING</strong> (11+/12):</p>
+<ul>
+<li>✅ All previous passing tools</li>
+<li>✅ <code>ruchy fmt</code> - Now safe! (Bug #31 fixed)</li>
+<li>✅ <code>ruchy compile</code> - Works! (Bug #32 fixed)</li>
+<li>✅ <code>ruchy property-tests</code> - Functional! (Bug #33 fixed)</li>
+<li>✅ <code>ruchy lint</code> - Mostly fixed (Bug #34)</li>
+<li>✅ <code>ruchy coverage</code> - Real metrics! (Bug #36 fixed)</li>
+<li>✅ <code>ruchy fuzz</code> - Unblocked (Bug #32 fixed)</li>
+</ul>
+<p><strong>Our Code Quality</strong>: Excellent despite tool issues</p>
+<ul>
+<li>✅ All tests pass</li>
+<li>✅ Clean, documented code</li>
+<li>✅ Zero SATD</li>
+<li>✅ Follows EXTREME TDD</li>
+</ul>
+<h2 id="key-learnings"><a class="header" href="#key-learnings">Key Learnings</a></h2>
+<h3 id="ruchy-syntax"><a class="header" href="#ruchy-syntax">Ruchy Syntax</a></h3>
+<ul>
+<li>Tests: <code>@test("description")</code> + <code>fun</code></li>
+<li>Built-ins: <code>fs_read</code>, <code>fs_write</code>, <code>env_args</code>, <code>range</code></li>
+<li>No imports needed for stdlib</li>
+</ul>
+<h3 id="tdd-workflow"><a class="header" href="#tdd-workflow">TDD Workflow</a></h3>
+<ol>
+<li><strong>RED</strong>: Write failing test first</li>
+<li><strong>GREEN</strong>: Minimal implementation</li>
+<li><strong>REFACTOR</strong>: Clean code, add tests</li>
+<li><strong>PROPERTY</strong>: Test invariants (1000+ iterations)</li>
+<li><strong>QUALIFY</strong>: Run all tools</li>
+<li><strong>Commit</strong>: Each phase separately</li>
+</ol>
+<h3 id="toyota-way"><a class="header" href="#toyota-way">Toyota Way</a></h3>
+<ul>
+<li><strong>Jidoka</strong>: Stopped twice for bugs</li>
+<li><strong>Genchi Genbutsu</strong>: Investigated actual behavior</li>
+<li><strong>Kaizen</strong>: Improved process from learnings</li>
+<li><strong>Respect</strong>: Documented for future developers</li>
+</ul>
+<h3 id="metrics"><a class="header" href="#metrics">Metrics</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Metric</th><th>Value</th></tr></thead><tbody>
+<tr><td>Tests</td><td>10</td></tr>
+<tr><td>Test Pass Rate</td><td>100%</td></tr>
+<tr><td>Property Iterations</td><td>1250+</td></tr>
+<tr><td>Lines of Code</td><td>60</td></tr>
+<tr><td>Lines of Tests</td><td>280</td></tr>
+<tr><td>Test/Code Ratio</td><td>4.7:1</td></tr>
+<tr><td>Stop The Line Events</td><td>2</td></tr>
+<tr><td>Bugs Filed</td><td>6</td></tr>
+<tr><td>Bugs Fixed</td><td>5 (83% in &lt;1 day)</td></tr>
+</tbody></table>
+</div>
+<h2 id="summary"><a class="header" href="#summary">Summary</a></h2>
+<p>We successfully built <code>ruchy-cat</code> following EXTREME TDD:</p>
+<p>✅ Complete cycle: RED → GREEN → REFACTOR → PROPERTY → QUALIFY
+✅ Comprehensive testing: 10 tests, 1250+ iterations
+✅ Quality code: Clean, documented, zero SATD
+✅ Toyota Way: Two Stop The Line events, perfect execution
+✅ Real learning: Handled actual bugs professionally</p>
+<p><strong>Most Important</strong>: Quality comes first. When we found bugs, we stopped, filed reports, and the Ruchy team fixed them quickly. This is professional development.</p>
+<h2 id="next-steps"><a class="header" href="#next-steps">Next Steps</a></h2>
+<p>You're ready for:</p>
+<ul>
+<li><strong>Chapter 2: ruchy-grep</strong> - Pattern matching</li>
+<li><strong>Chapter 3: ruchy-wc</strong> - Counting and Unicode</li>
+<li><strong>Part III</strong>: Deep dives into mutation/property testing</li>
+</ul>
+<p>The foundation is solid. Let's build more!</p>
+<hr />
+<p><strong>Project Files</strong>:</p>
+<ul>
+<li><code>examples/ruchy-cat/cat.ruchy</code> - Implementation (60 lines)</li>
+<li><code>examples/ruchy-cat/cat_test.ruchy</code> - Tests (280 lines)</li>
+<li><code>examples/ruchy-cat/QUALIFICATION_REPORT.md</code> - Tool results</li>
+<li><code>STOP_THE_LINE_REPORT.md</code> - Bug #30</li>
+<li><code>STOP_THE_LINE_REPORT_2.md</code> - Bugs #31-36</li>
+<li><code>BUG_VERIFICATION_v3.83.0.md</code> - Final verification</li>
+</ul>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../part2/01_cat.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../part1/03_cli_basics.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
@@ -178,7 +454,7 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../part2/01_cat.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../part1/03_cli_basics.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 

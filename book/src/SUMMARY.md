@@ -13,13 +13,7 @@
 - [Chapter 1: ruchy-cat](./part2/01_cat.md)
 - [Chapter 2: ruchy-grep](./part2/02_grep.md)
 - [Chapter 3: ruchy-wc](./part2/03_wc.md)
-- [Chapter 4: ruchy-cut](./part2/04_cut.md)
-- [Chapter 5: ruchy-sort](./part2/05_sort.md)
-- [Chapter 6: ruchy-uniq](./part2/06_uniq.md)
-- [Chapter 7: ruchy-sed](./part2/07_sed.md)
-- [Chapter 8: ruchy-head](./part2/04_head.md)
-- [Chapter 9: ruchy-tail](./part2/09_tail.md)
-- [Chapter 10: ruchy-jq](./part2/10_jq.md)
+- [Chapter 4: ruchy-head](./part2/04_head.md)
 
 # Part III: Advanced Topics
 
