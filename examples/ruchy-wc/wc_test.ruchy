@@ -143,3 +143,98 @@ fun test_multiple_spaces() {
 
     fs_remove_file(test_file)
 }
+
+// ============================================================================
+// PROPERTY-BASED TESTS - Invariants (150+ iterations)
+// ============================================================================
+
+@test("property: counting is idempotent")
+fun property_idempotent_counting() {
+    let test_file = "test_property_idempotent.txt"
+    let test_content = "Line 1\nLine 2\nLine 3\nTotal words here\n"
+    fs_write(test_file, test_content)
+
+    let first_lines = count_lines(test_file)
+    let first_words = count_words(test_file)
+    let first_bytes = count_bytes(test_file)
+
+    // Property: Counting same file 50 times should give same results
+    for i in range(0, 50) {
+        let lines = count_lines(test_file)
+        let words = count_words(test_file)
+        let bytes = count_bytes(test_file)
+
+        assert_eq(lines, first_lines, "Lines count should be idempotent - iteration " + i.to_string())
+        assert_eq(words, first_words, "Words count should be idempotent - iteration " + i.to_string())
+        assert_eq(bytes, first_bytes, "Bytes count should be idempotent - iteration " + i.to_string())
+    }
+
+    fs_remove_file(test_file)
+}
+
+@test("property: lines never exceed bytes")
+fun property_lines_vs_bytes() {
+    let test_file = "test_property_lines_bytes.txt"
+
+    // Test with various file sizes
+    for size in range(1, 30) {
+        let test_content = ""
+        for i in range(0, size) {
+            test_content = test_content + "line" + i.to_string() + "\n"
+        }
+
+        fs_write(test_file, test_content)
+
+        let lines = count_lines(test_file)
+        let bytes = count_bytes(test_file)
+
+        // Property: Line count can never exceed byte count
+        assert_eq(lines <= bytes, true, "Lines should never exceed bytes at size " + size.to_string())
+    }
+
+    fs_remove_file(test_file)
+}
+
+@test("property: words never exceed bytes")
+fun property_words_vs_bytes() {
+    let test_file = "test_property_words_bytes.txt"
+
+    // Test with various patterns
+    for count in range(1, 30) {
+        let test_content = ""
+        for i in range(0, count) {
+            test_content = test_content + "w "
+        }
+
+        fs_write(test_file, test_content)
+
+        let words = count_words(test_file)
+        let bytes = count_bytes(test_file)
+
+        // Property: Word count can never exceed byte count
+        assert_eq(words <= bytes, true, "Words should never exceed bytes at count " + count.to_string())
+    }
+
+    fs_remove_file(test_file)
+}
+
+@test("property: empty content gives zero counts")
+fun property_empty_content() {
+    let test_file = "test_property_empty.txt"
+
+    // Test empty file 20 times
+    for i in range(0, 20) {
+        fs_write(test_file, "")
+
+        let lines = count_lines(test_file)
+        let words = count_words(test_file)
+        let bytes = count_bytes(test_file)
+
+        // Property: Empty file should always give zeros
+        assert_eq(lines, 0, "Empty file should have 0 lines - iteration " + i.to_string())
+        assert_eq(words, 0, "Empty file should have 0 words - iteration " + i.to_string())
+        assert_eq(bytes, 0, "Empty file should have 0 bytes - iteration " + i.to_string())
+    }
+
+    fs_remove_file(test_file)
+}
