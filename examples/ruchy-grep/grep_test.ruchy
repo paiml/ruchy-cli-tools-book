@@ -10,13 +10,25 @@
 // GREEN PHASE (S2T2): Minimal implementation
 fun grep_in_file(pattern, file_path) {
     let content = fs_read(file_path)
-    let lines = split(content, "\n")
     let matches = ""
+    let current_line = ""
 
-    for line in lines {
-        if line.contains(pattern) {
-            matches = matches + line + "\n"
+    // Parse lines manually (split() not available in test environment)
+    for i in range(0, content.len()) {
+        let ch = content[i]
+        if ch == "\n" {
+            if current_line.contains(pattern) {
+                matches = matches + current_line + "\n"
+            }
+            current_line = ""
+        } else {
+            current_line = current_line + ch
         }
+    }
+
+    // Check last line (if no trailing newline)
+    if current_line.len() > 0 && current_line.contains(pattern) {
+        matches = matches + current_line + "\n"
     }
 
     matches
