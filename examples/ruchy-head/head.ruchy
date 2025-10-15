@@ -1,0 +1,48 @@
+// ruchy-head: Output the first n lines of a file
+// Sprint 4 - Chapter 4 example from Ruchy CLI Tools Book
+
+// Returns the first n lines from a file.
+// If n is greater than the number of lines, returns all lines.
+// If n is 0, returns empty string.
+// Algorithm: O(n) single pass through file content.
+fun head_lines(file_path, n) {
+    let content = fs_read(file_path)
+    let result = ""
+    let line_count = 0
+
+    for i in range(0, content.len()) {
+        let ch = content[i]
+
+        if line_count < n {
+            result = result + ch
+        }
+
+        if ch == "\n" {
+            line_count = line_count + 1
+            if line_count >= n {
+                return result
+            }
+        }
+    }
+
+    result
+}
+
+// Main entry point for command-line usage
+fun main() {
+    let args = env_args()
+
+    if args.len() < 2 {
+        println("Usage: ruchy run head.ruchy <file>")
+        println("       ruchy run head.ruchy -n <number> <file>")
+        println("")
+        println("Default: Shows first 10 lines")
+    } else {
+        let has_flag = args.len() >= 3
+        let n = if has_flag { args[1].to_int() } else { 10 }
+        let file_path = if has_flag { args[2] } else { args[1] }
+
+        let result = head_lines(file_path, n)
+        print(result)
+    }
+}

@@ -109,3 +109,130 @@ fun test_head_empty() {
 
     fs_remove_file(test_file)
 }
+
+@test("handles single line file")
+fun test_head_single_line_file() {
+    let test_file = "test_head_single_line.txt"
+    let test_content = "Only one line\n"
+    fs_write(test_file, test_content)
+
+    let result = head_lines(test_file, 5)
+
+    assert_eq(result, "Only one line\n", "Should return the single line")
+
+    fs_remove_file(test_file)
+}
+
+@test("handles large n value")
+fun test_head_large_n() {
+    let test_file = "test_head_large_n.txt"
+    let test_content = "Line 1\nLine 2\nLine 3\n"
+    fs_write(test_file, test_content)
+
+    let result = head_lines(test_file, 1000)
+
+    assert_eq(result, "Line 1\nLine 2\nLine 3\n", "Should return all lines for very large n")
+
+    fs_remove_file(test_file)
+}
+
+// ============================================================================
+// PROPERTY-BASED TESTS
+// ============================================================================
+
+@test("property: head is idempotent")
+fun property_idempotent() {
+    let test_file = "test_property_idempotent.txt"
+    let test_content = "Line 1\nLine 2\nLine 3\nLine 4\nLine 5\n"
+    fs_write(test_file, test_content)
+
+    let first_result = head_lines(test_file, 3)
+
+    // Property: Running head multiple times on same file gives same result
+    for i in range(0, 50) {
+        let result = head_lines(test_file, 3)
+        assert_eq(result, first_result, "head should be idempotent")
+    }
+
+    fs_remove_file(test_file)
+}
+
+@test("property: head output never exceeds input")
+fun property_output_size() {
+    let test_file = "test_property_size.txt"
+
+    // Test with various file sizes
+    for size in range(1, 20) {
+        let test_content = ""
+        for i in range(0, size) {
+            test_content = test_content + "Line " + i.to_string() + "\n"
+        }
+
+        fs_write(test_file, test_content)
+
+        let original_size = test_content.len()
+
+        // Test with various n values
+        for n in range(0, size + 5) {
+            let result = head_lines(test_file, n)
+            let result_size = result.len()
+
+            // Property: Output size never exceeds input size
+            assert_eq(result_size <= original_size, true, "head output should not exceed input size")
+        }
+    }
+
+    fs_remove_file(test_file)
+}
+
+@test("property: head(n) line count never exceeds n")
+fun property_line_count_limit() {
+    let test_file = "test_property_lines.txt"
+
+    // Create a file with known number of lines
+    let test_content = ""
+    for i in range(0, 20) {
+        test_content = test_content + "Line " + i.to_string() + "\n"
+    }
+    fs_write(test_file, test_content)
+
+    // Test various n values
+    for n in range(0, 25) {
+        let result = head_lines(test_file, n)
+
+        // Count lines in result
+        let line_count = 0
+        for i in range(0, result.len()) {
+            if result[i] == "\n" {
+                line_count = line_count + 1
+            }
+        }
+
+        // Property: Result line count never exceeds n
+        assert_eq(line_count <= n, true, "head should return at most n lines")
+    }
+
+    fs_remove_file(test_file)
+}
+
+@test("property: head(0) always returns empty")
+fun property_zero_lines() {
+    let test_file = "test_property_zero.txt"
+
+    // Test with various file contents
+    for size in range(0, 30) {
+        let test_content = ""
+        for i in range(0, size) {
+            test_content = test_content + "Content " + i.to_string() + "\n"
+        }
+
+        fs_write(test_file, test_content)
+
+        let result = head_lines(test_file, 0)
+
+        // Property: head(0) always returns empty string
+        assert_eq(result, "", "head(0) should always return empty string")
+    }
+
+    fs_remove_file(test_file)
+}
