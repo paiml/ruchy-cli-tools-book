@@ -34,6 +34,33 @@ fun grep_in_file(pattern, file_path) {
     matches
 }
 
+// Searches for a pattern in a file with case-insensitive matching.
+fun grep_in_file_ignore_case(pattern, file_path) {
+    let content = fs_read(file_path)
+    let matches = ""
+    let current_line = ""
+    let pattern_lower = pattern.to_lowercase()
+
+    for i in range(0, content.len()) {
+        let ch = content[i]
+        if ch == "\n" {
+            if current_line.to_lowercase().contains(pattern_lower) {
+                matches = matches + current_line + "\n"
+            }
+            current_line = ""
+        } else {
+            current_line = current_line + ch
+        }
+    }
+
+    // Check last line
+    if current_line.len() > 0 && current_line.to_lowercase().contains(pattern_lower) {
+        matches = matches + current_line + "\n"
+    }
+
+    matches
+}
+
 // ============================================================================
 // UNIT TESTS - Basic Functionality
 // ============================================================================
@@ -52,5 +79,86 @@ fun test_find_pattern_in_file() {
     assert_eq(result, "Pattern matching\n", "Should find line with pattern")
 
     // Cleanup
+    fs_remove_file(test_file)
+}
+
+@test("finds multiple matching lines")
+fun test_find_multiple_matches() {
+    let test_file = "test_grep_multiple.txt"
+    let test_content = "apple pie\nbanana split\napple juice\norange\napple crisp\n"
+    fs_write(test_file, test_content)
+
+    let result = grep_in_file("apple", test_file)
+
+    assert_eq(result, "apple pie\napple juice\napple crisp\n", "Should find all lines with pattern")
+
+    fs_remove_file(test_file)
+}
+
+@test("returns empty string when no matches")
+fun test_no_matches() {
+    let test_file = "test_grep_nomatch.txt"
+    let test_content = "Hello World\nThis is a test\nAnother line\n"
+    fs_write(test_file, test_content)
+
+    let result = grep_in_file("NOTFOUND", test_file)
+
+    assert_eq(result, "", "Should return empty string when no matches")
+
+    fs_remove_file(test_file)
+}
+
+@test("handles empty file")
+fun test_empty_file() {
+    let test_file = "test_grep_empty.txt"
+    fs_write(test_file, "")
+
+    let result = grep_in_file("pattern", test_file)
+
+    assert_eq(result, "", "Should return empty string for empty file")
+
+    fs_remove_file(test_file)
+}
+
+@test("finds pattern at line start")
+fun test_pattern_at_start() {
+    let test_file = "test_grep_start.txt"
+    let test_content = "pattern at start\nmiddle pattern middle\nend pattern\n"
+    fs_write(test_file, test_content)
+
+    let result = grep_in_file("pattern", test_file)
+
+    assert_eq(result, "pattern at start\nmiddle pattern middle\nend pattern\n", "Should find pattern anywhere in line")
+
+    fs_remove_file(test_file)
+}
+
+@test("handles file without trailing newline")
+fun test_no_trailing_newline() {
+    let test_file = "test_grep_no_newline.txt"
+    let test_content = "line one\nline two with pattern"
+    fs_write(test_file, test_content)
+
+    let result = grep_in_file("pattern", test_file)
+
+    assert_eq(result, "line two with pattern\n", "Should handle last line without trailing newline")
+
+    fs_remove_file(test_file)
+}
+
+// ============================================================================
+// CASE-INSENSITIVE SEARCH TESTS
+// ============================================================================
+
+@test("case-insensitive search finds mixed case matches")
+fun test_case_insensitive_search() {
+    let test_file = "test_grep_case.txt"
+    let test_content = "Hello World\nHELLO again\nhello there\nGoodbye\n"
+    fs_write(test_file, test_content)
+
+    let result = grep_in_file_ignore_case("hello", test_file)
+
+    assert_eq(result, "Hello World\nHELLO again\nhello there\n", "Should find all case variations")
+
     fs_remove_file(test_file)
 }
