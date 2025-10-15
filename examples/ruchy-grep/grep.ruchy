@@ -64,18 +64,17 @@ fun main() {
     if args.len() < 3 {
         println("Usage: ruchy run grep.ruchy <pattern> <file>")
         println("       ruchy run grep.ruchy -i <pattern> <file>")
-        return
-    }
-
-    let ignore_case = args[1] == "-i"
-    let pattern = if ignore_case { args[2] } else { args[1] }
-    let file_path = if ignore_case { args[3] } else { args[2] }
-
-    let result = if ignore_case {
-        grep_in_file_ignore_case(pattern, file_path)
     } else {
-        grep_in_file(pattern, file_path)
-    }
+        let ignore_case = args[1] == "-i"
+        let pattern = if ignore_case { args[2] } else { args[1] }
+        let file_path = if ignore_case { args[3] } else { args[2] }
 
-    print(result)
+        let result = if ignore_case {
+            grep_in_file_ignore_case(pattern, file_path)
+        } else {
+            grep_in_file(pattern, file_path)
+        }
+
+        print(result)
+    }
 }
