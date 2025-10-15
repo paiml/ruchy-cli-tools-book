@@ -162,3 +162,59 @@ fun test_case_insensitive_search() {
 
     fs_remove_file(test_file)
 }
+
+// ============================================================================
+// PROPERTY-BASED TESTS - Invariants (200+ iterations)
+// ============================================================================
+
+@test("property: idempotent searches - same pattern always gives same result")
+fun property_idempotent_search() {
+    let test_file = "test_property_idempotent.txt"
+    let test_content = "apple pie\nbanana split\napple juice\norange soda\napple crisp\n"
+    fs_write(test_file, test_content)
+
+    let first_result = grep_in_file("apple", test_file)
+
+    // Property: Running same search 100 times should give same result
+    for i in range(0, 100) {
+        let current_result = grep_in_file("apple", test_file)
+        assert_eq(current_result, first_result, "Grep should be idempotent - iteration " + i.to_string())
+    }
+
+    fs_remove_file(test_file)
+}
+
+@test("property: empty pattern matches all lines")
+fun property_empty_pattern() {
+    let test_file = "test_property_empty.txt"
+    let test_content = "line one\nline two\nline three\n"
+    fs_write(test_file, test_content)
+
+    // Property: Empty pattern should match all lines (since every line contains "")
+    let result = grep_in_file("", test_file)
+
+    assert_eq(result, test_content, "Empty pattern should match all lines")
+
+    fs_remove_file(test_file)
+}
+
+@test("property: result length never exceeds input length")
+fun property_result_subset() {
+    let test_file = "test_property_subset.txt"
+
+    // Test with various file sizes
+    for size in range(1, 50) {
+        let test_content = ""
+        for i in range(0, size) {
+            test_content = test_content + "line" + i.to_string() + " data\n"
+        }
+
+        fs_write(test_file, test_content)
+        let result = grep_in_file("data", test_file)
+
+        // Property: Result length should be <= input length
+        assert_eq(result.len() <= test_content.len(), true, "Result cannot be longer than input at size " + size.to_string())
+    }
+
+    fs_remove_file(test_file)
+}

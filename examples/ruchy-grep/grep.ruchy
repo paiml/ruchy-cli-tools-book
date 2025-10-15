@@ -2,7 +2,80 @@
 // Chapter 2 example from Ruchy CLI Tools Book
 
 // Searches for a pattern in a file and returns matching lines.
-// This is a STUB implementation for RED phase.
+// Performs case-sensitive matching.
 fun grep_in_file(pattern, file_path) {
-    ""
+    let content = fs_read(file_path)
+    let matches = ""
+    let current_line = ""
+
+    // Parse lines manually (split() not available in test environment)
+    for i in range(0, content.len()) {
+        let ch = content[i]
+        if ch == "\n" {
+            if current_line.contains(pattern) {
+                matches = matches + current_line + "\n"
+            }
+            current_line = ""
+        } else {
+            current_line = current_line + ch
+        }
+    }
+
+    // Check last line (if no trailing newline)
+    if current_line.len() > 0 && current_line.contains(pattern) {
+        matches = matches + current_line + "\n"
+    }
+
+    matches
+}
+
+// Searches for a pattern in a file with case-insensitive matching.
+// Converts both pattern and content to lowercase before matching.
+fun grep_in_file_ignore_case(pattern, file_path) {
+    let content = fs_read(file_path)
+    let matches = ""
+    let current_line = ""
+    let pattern_lower = pattern.to_lowercase()
+
+    for i in range(0, content.len()) {
+        let ch = content[i]
+        if ch == "\n" {
+            if current_line.to_lowercase().contains(pattern_lower) {
+                matches = matches + current_line + "\n"
+            }
+            current_line = ""
+        } else {
+            current_line = current_line + ch
+        }
+    }
+
+    // Check last line
+    if current_line.len() > 0 && current_line.to_lowercase().contains(pattern_lower) {
+        matches = matches + current_line + "\n"
+    }
+
+    matches
+}
+
+// Main entry point for command-line usage
+fun main() {
+    let args = env_args()
+
+    if args.len() < 3 {
+        println("Usage: ruchy run grep.ruchy <pattern> <file>")
+        println("       ruchy run grep.ruchy -i <pattern> <file>")
+        return
+    }
+
+    let ignore_case = args[1] == "-i"
+    let pattern = if ignore_case { args[2] } else { args[1] }
+    let file_path = if ignore_case { args[3] } else { args[2] }
+
+    let result = if ignore_case {
+        grep_in_file_ignore_case(pattern, file_path)
+    } else {
+        grep_in_file(pattern, file_path)
+    }
+
+    print(result)
 }
