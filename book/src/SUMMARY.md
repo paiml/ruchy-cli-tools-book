@@ -63,10 +63,12 @@
   - [Substitution Patterns](./part2/07_sed.md#substitution)
   - [Advanced sed Features](./part2/07_sed.md#advanced)
 
-- [Chapter 8: ruchy-head](./part2/08_head.md)
-  - [Reading First N Lines](./part2/08_head.md#reading-lines)
-  - [Byte-based Reading](./part2/08_head.md#bytes)
-  - [Multiple File Handling](./part2/08_head.md#multiple-files)
+- [Chapter 8: ruchy-head](./part2/04_head.md)
+  - [Understanding head](./part2/04_head.md#understanding-head)
+  - [GREEN: Implementation](./part2/04_head.md#green)
+  - [REFACTOR: Property Tests](./part2/04_head.md#refactor)
+  - [QUALIFY: Quality Tools & Regression](./part2/04_head.md#qualify)
+  - [Key Learnings](./part2/04_head.md#key-learnings)
 
 - [Chapter 9: ruchy-tail](./part2/09_tail.md)
   - [Reading Last N Lines](./part2/09_tail.md#last-lines)
