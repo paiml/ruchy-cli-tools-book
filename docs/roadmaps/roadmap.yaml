@@ -1,0 +1,58 @@
+roadmap_version: '1.0'
+github_enabled: true
+github_repo: paiml/ruchy-cli-tools-book
+roadmap:
+- id: PMAT-003
+  github_issue: 3
+  item_type: task
+  title: contracts/readme-root.yaml SHACL shape + census
+  status: planned
+  priority: medium
+  assigned_to: null
+  created: 2026-11-13T14:54:18Z
+  updated: 2026-11-13T14:54:18Z
+  spec: null
+  acceptance_criteria: []
+  phases: []
+  subtasks: []
+  estimated_effort: null
+  labels:
+  - kind:docs
+  notes: null
+  epic: 2
+- id: PMAT-004
+  github_issue: 4
+  item_type: task
+  title: Rewrite README.md with frontmatter + resolved claim fences
+  status: planned
+  priority: medium
+  assigned_to: null
+  created: 2026-11-13T14:54:19Z
+  updated: 2026-11-13T14:54:19Z
+  spec: null
+  acceptance_criteria: []
+  phases: []
+  subtasks: []
+  estimated_effort: null
+  labels:
+  - kind:docs
+  notes: null
+  epic: 2
+- id: PMAT-005
+  github_issue: 5
+  item_type: task
+  title: tests/readme-shape-falsifier.sh + readme-shape-lab.yml (LAB, C324)
+  status: planned
+  priority: medium
+  assigned_to: null
+  created: 2026-11-13T14:54:20Z
+  updated: 2026-11-13T14:54:20Z
+  spec: null
+  acceptance_criteria: []
+  phases: []
+  subtasks: []
+  estimated_effort: null
+  labels:
+  - kind:docs
+  notes: null
+  epic: 2

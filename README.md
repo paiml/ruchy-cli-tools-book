@@ -1,3 +1,11 @@
+---
+schema_version: "1.0"
+kind: spec
+entrypoints: [examples, book, Makefile]
+contract_count: 1
+---
+<!-- CONTRACT_COUNT_START -->1<!-- CONTRACT_COUNT_END -->
+
 # Ruchy CLI Tools Book
 
 A comprehensive book on writing CLI tools **in the Ruchy programming language**, built using **EXTREME TDD** practices that demonstrate the complete RED-GREEN-REFACTOR cycle with industrial-grade quality enforcement.
@@ -21,10 +29,19 @@ A comprehensive book on writing CLI tools **in the Ruchy programming language**,
 
 ## Quick Start
 
-```bash
-# Prerequisites: Install Ruchy compiler
-cargo install ruchy
+Install the Ruchy compiler with the exact command the committed CI runs (`ci.yml`'s
+`validate` and `test-all` jobs, `book-deploy.yml`'s `test-examples` job):
 
+```bash
+cargo install ruchy
+```
+
+The rest of the day-to-day commands are real and runnable, but every CI step that
+exercises them wraps the underlying `ruchy`/`make` invocation in its own longer shell
+block (loops, `|| echo` fallbacks, `continue-on-error`) rather than running a bare
+`make <target>` line, so they are illustrative rather than literal CI claims:
+
+```text
 # Verify installation
 make check-ruchy
 
@@ -145,7 +162,7 @@ ruchy-cli-tools-book/
 ## Available Commands
 
 ### Fast Feedback (<10s)
-```bash
+```text
 make format          # Format Ruchy code (ruchy fmt)
 make lint            # Lint Ruchy code (ruchy lint)
 make test-fast       # Unit tests (ruchy test run)
@@ -154,27 +171,27 @@ make check-ruchy     # Verify Ruchy installation
 ```
 
 ### Comprehensive Testing
-```bash
+```text
 make test-all          # All tests
 make test-examples     # Test all CLI examples
 make dogfood-full      # Test with all 15 Ruchy tools
 ```
 
 ### Quality Analysis
-```bash
+```text
 make quality-gate      # All blocking quality checks
 make quality-report    # Generate metrics report
 ```
 
 ### Book Operations
-```bash
+```text
 make book-build    # Build book
 make book-serve    # Serve at localhost:3000
 make book-test     # Test all examples
 ```
 
 ### Full CI
-```bash
+```text
 make ci  # Complete validation pipeline
 ```
 
@@ -188,12 +205,12 @@ Pre-commit hooks are **MANDATORY** and enforce:
 5. Zero SATD markers (TODO/FIXME/HACK)
 
 **Installation:**
-```bash
+```text
 make install-hooks
 ```
 
 **FORBIDDEN COMMAND:**
-```bash
+```text
 git commit --no-verify  # NEVER USE THIS
 ```
 
@@ -242,7 +259,7 @@ FIX: Resolve [issue]
 
 ## Development Workflow
 
-```bash
+```text
 # Morning
 git pull
 make check-ruchy  # Verify Ruchy is installed
@@ -294,6 +311,30 @@ This project follows strict TDD practices:
   - [ruchy-book](https://github.com/YOUR_ORG/ruchy-book) - Book structure
   - [rosetta-ruchy](https://github.com/YOUR_ORG/rosetta-ruchy) - Examples
   - [paiml-mcp-agent-toolkit](https://github.com/YOUR_ORG/paiml-mcp-agent-toolkit) - Quality infrastructure
+
+## pv-readme Contract
+
+This README carries frontmatter (`schema_version`, `kind`, `entrypoints`,
+`contract_count`) and is graded by `contracts/readme-root.yaml` against the
+`pv-readme` SHACL shape (`readme:Readme`, #2).
+
+- **One local claim available**: `cargo install ruchy` is a literal `run:` line in
+  `ci.yml`'s `validate` and `test-all` jobs and `book-deploy.yml`'s `test-examples`
+  job, which the Quick Start fence claims verbatim. Every other command this README
+  documents (`make check-ruchy`, `make validate`, `make test-all`, `make dogfood-full`,
+  the pre-commit and Development Workflow commands) is real and runnable, but every
+  CI step that exercises it wraps the invocation in its own loop, `|| echo` fallback,
+  or `continue-on-error`, so none is a bare literal match — those fences stay `text`.
+- **Entrypoints**: `examples`, `book`, `Makefile`.
+- **Contract count**: `1` (`contracts/census.json`; `readme-root.yaml` is the only
+  file in this repo's `contracts/` directory).
+- **Falsifier**: `tests/readme-shape-falsifier.sh`, 6 cases proving the check can
+  fail (an unrun claim, a dropped `kind:`, a missing entrypoint, a wrong contract
+  count) as well as pass.
+- **LAB, not GATE** (C324): `.github/workflows/readme-shape-lab.yml` runs nightly
+  plus `workflow_dispatch`, never on the PR path.
+
+Part of paiml/ruchy-cli-tools-book#2.
 
 ## License
 
